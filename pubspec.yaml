@@ -39,6 +39,7 @@ dependencies:
   carousel_slider: ^4.1.1
   provider: any
   go_router: ^5.1.10
+  flutter_chips_input: ^2.0.0
 
 dev_dependencies:
   flutter_test:

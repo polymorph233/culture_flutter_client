@@ -3,6 +3,7 @@ import 'package:culture_flutter_client/view_models/festival_list_view_model.dart
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
+import '../packages/text_cursor/text_cursor.dart';
 import '../widgets/festival_list.dart';
 
 class FestivalListScreen extends StatefulWidget {
@@ -23,6 +24,9 @@ class _FestivalListScreenState extends State<FestivalListScreen> {
   @override
   Widget build(BuildContext context) {
     final vm = Provider.of<FestivalListViewModel>(context);
+
+    final GlobalKey<ChipsInputState> _chipKey = GlobalKey();
+
     return Scaffold(
         appBar: AppBar(
             title: const Text("Festivals")
@@ -33,21 +37,49 @@ class _FestivalListScreenState extends State<FestivalListScreen> {
             height: MediaQuery.of(context).size.height,
             child: Column(children: <Widget>[
               Container(
-                padding: const EdgeInsets.only(left: 10),
-                decoration: BoxDecoration(
-                    color: Colors.grey,
-                    borderRadius: BorderRadius.circular(10)
-                ),
-                child: TextField(
-                  controller: _controller,
-                  onSubmitted: (value) { /* TODO */ },
-                  style: const TextStyle(color: Colors.white),
-                  decoration: const InputDecoration(
-                      hintText: "Search",
-                      hintStyle: TextStyle(color: Colors.white),
-                      border: InputBorder.none
+                margin: const EdgeInsets.all(10),
+                child:
+                  ChipsInput(
+                    maxChips: 6,
+                    keyboardAppearance: Brightness.dark,
+                    textCapitalization: TextCapitalization.words,
+                    width: MediaQuery.of(context).size.width,
+                    enabled: true,
+                    separator: ' ',
+                    decoration: const InputDecoration(
+                      hintText: 'Enter Search Keywords...',
+                    ),
+                    initialTags: const [],
+                    autofocus: true,
+                    chipBuilder: (context, state, value) {
+                      return InputChip(
+                        key: ObjectKey(value),
+                        labelPadding: const EdgeInsets.only(left: 8.0, right: 3),
+                        backgroundColor: Colors.white,
+                        shape: const StadiumBorder(side: BorderSide(width: 1.8, color: Color.fromRGBO(228, 230, 235, 1))),
+                        shadowColor: Colors.grey,
+                        label: Text("#$value"),
+                        onDeleted: () => state.deleteChip(value),
+                        deleteIconColor: const Color.fromRGBO(138, 145, 151, 1),
+                        materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                      );
+                    },
+                    key: _chipKey,
+                    chipTextValidator: (String value) {
+                      value.contains('!');
+                      return -1;
+                    },
                   ),
-                ),
+                // TextField(
+                //   controller: _controller,
+                //   onSubmitted: (value) { /* TODO */ },
+                //   style: const TextStyle(color: Colors.white),
+                //   decoration: const InputDecoration(
+                //       hintText: "Search",
+                //       hintStyle: TextStyle(color: Colors.white),
+                //       border: InputBorder.none
+                //   ),
+                // ),
               ),
               Expanded(
                   child: FestivalList(festivals: vm.festivals, scrollController: ScrollController(),))//we will create this further down

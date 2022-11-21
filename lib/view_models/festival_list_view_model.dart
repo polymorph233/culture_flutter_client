@@ -6,6 +6,8 @@ import 'festival_view_model.dart';
 class FestivalListViewModel extends ChangeNotifier {
   List<FestivalViewModel> festivals = <FestivalViewModel>[];
 
+  List<FestivalViewModel> filteredFestivals = <FestivalViewModel>[];
+
   Future<void> update() async {
     // TODO: Update festival list from remote
     final results = await DummyService.fetch();
@@ -19,6 +21,9 @@ class FestivalListViewModel extends ChangeNotifier {
   }
 
   List<FestivalViewModel> randomFestivals(int count) {
+    if (festivals.isEmpty) {
+      update();
+    }
     List<FestivalViewModel> copyOfFestivals = List.from(festivals);
     copyOfFestivals.shuffle();
     if (count > copyOfFestivals.length) {
