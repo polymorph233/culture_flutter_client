@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "767534342700",
+    "project_id": "hackathon2022istic-46ff0",
+    "storage_bucket": "hackathon2022istic-46ff0.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:767534342700:android:3db46e4210a98e6d432789",
+        "android_client_info": {
+          "package_name": "fr.istic.hackaton2022.culturefestival"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "767534342700-kiek7urjfmibbeonvs4045cvnpbhu3d4.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyADVOUuLyBtqKAa_vGB6UZEBc5irZWMo7w"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "767534342700-kiek7urjfmibbeonvs4045cvnpbhu3d4.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
