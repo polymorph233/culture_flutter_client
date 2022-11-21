@@ -7,9 +7,9 @@
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:767534342700:android:3db46e4210a98e6d432789",
+        "mobilesdk_app_id": "1:767534342700:android:e32b9307f3645108432789",
         "android_client_info": {
-          "package_name": "fr.istic.hackaton2022.culturefestival"
+          "package_name": "fr.istic.hackathon2022.culturefestival"
         }
       },
       "oauth_client": [
@@ -29,6 +29,13 @@
             {
               "client_id": "767534342700-kiek7urjfmibbeonvs4045cvnpbhu3d4.apps.googleusercontent.com",
               "client_type": 3
+            },
+            {
+              "client_id": "767534342700-mrk34t8q01mqrd005hs601qb1cm3d3ku.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "fr.istic.hackathon2022.culturefestival"
+              }
             }
           ]
         }
