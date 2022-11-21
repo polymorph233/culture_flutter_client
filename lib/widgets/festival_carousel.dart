@@ -15,7 +15,8 @@ class FestivalCarousel {
           return Container(
             width: MediaQuery.of(context).size.width,
             margin: const EdgeInsets.symmetric(horizontal: 5.0),
-            decoration: const BoxDecoration(color: Colors.amber)
+            decoration: const BoxDecoration(color: Colors.amber),
+            child: Center(child: Text(i.name))
           );
         });
     }).toList(), options: CarouselOptions(height: 400.0));
