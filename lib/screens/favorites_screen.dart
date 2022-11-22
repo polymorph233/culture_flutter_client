@@ -9,6 +9,7 @@ import 'package:provider/provider.dart';
 
 import '../packages/text_cursor/text_cursor.dart';
 import '../widgets/festival_list.dart';
+import '../widgets/search_box.dart';
 
 class FavoriteFestivalListScreen extends StatefulWidget {
   const FavoriteFestivalListScreen({super.key});
@@ -80,47 +81,15 @@ class _FavoriteFestivalListScreenState extends State<FavoriteFestivalListScreen>
             height: MediaQuery.of(context).size.height,
             child: Column(children: <Widget>[
               Container(
-                  margin: const EdgeInsets.all(10),
-                  child:
-                  Row(children: [
-                    Expanded(child: ChipsInput(
-                      maxChips: 6,
-                      keyboardAppearance: Brightness.dark,
-                      textCapitalization: TextCapitalization.words,
-                      width: MediaQuery.of(context).size.width,
-                      enabled: true,
-                      separator: ' ',
-                      decoration: const InputDecoration(
-                        hintText: 'Enter Search Keywords...',
-                      ),
-                      initialTags: const [],
-                      autofocus: true,
-                      chipBuilder: (context, state, value) {
-                        return InputChip(
-                          key: ObjectKey(value),
-                          labelPadding: const EdgeInsets.only(left: 8.0, right: 3),
-                          backgroundColor: Colors.white,
-                          shape: const StadiumBorder(side: BorderSide(width: 1.8, color: Color.fromRGBO(228, 230, 235, 1))),
-                          shadowColor: Colors.grey,
-                          label: Text("#$value"),
-                          onDeleted: () => state.deleteChip(value),
-                          deleteIconColor: const Color.fromRGBO(138, 145, 151, 1),
-                          materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                        );
-                      },
-                      key: _chipKey,
-                      chipTextValidator: (String value) {
-                        value.contains('!');
-                        return -1;
-                      },
-                      onChangedTag: (values) => {
-                        tags = values.map((e) => e.toString()).toList()
-                      },
-                    )),
-                    IconButton(onPressed: () =>
-                        search(tags)
-                        , icon: const Icon(Icons.check))
-                  ],)
+                child: Expanded(child: SearchBox(
+                onTapped: (String value) {
+                  tags.remove(value);
+                  search(tags);
+                },
+                onChanged: (List<String> value) {
+                  tags = value;
+                  search(tags);
+                }))
               ),
               Expanded(
                 child: FestivalList(
@@ -148,11 +117,11 @@ class _FavoriteFestivalsEntryState extends State<FavoriteFestivalsEntry> {
 
   @override
   Widget build(BuildContext context) {
-    MainListViewModel mainListViewModel = GetIt.instance.get<MainListViewModel>();
+    final vm = Provider.of<MainListViewModel>(context);
     return Scaffold(
       body: ChangeNotifierProvider(
-        create: (context) => mainListViewModel,
-        child: const FavoriteFestivalListScreen(),
+        create: (context) => vm,
+        child: const FavoriteFestivalListScreen()
       ),
       floatingActionButtonLocation: ExpandableFab.location,
       floatingActionButton: const NavigationFab(currentPageType: PageType.favorites),

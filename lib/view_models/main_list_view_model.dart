@@ -9,6 +9,12 @@ class MainListViewModel extends ChangeNotifier {
 
   List<FestivalViewModel> favorites = <FestivalViewModel>[];
 
+  @override void dispose() {} /* Prevent this view model from disposing */
+
+  void selfDispose() {
+    super.dispose();
+  }
+
   Future<void> update() async {
     // TODO: Update festival list from remote
     final results = await DummyService.fetch();

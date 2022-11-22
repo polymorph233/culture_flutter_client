@@ -1,7 +1,6 @@
 import 'package:culture_flutter_client/screens/favorites_screen.dart';
 import 'package:culture_flutter_client/screens/festival_list_screen.dart';
 import 'package:culture_flutter_client/screens/welcome_screen.dart';
-import 'package:culture_flutter_client/view_models/festival_list_view_model.dart';
 import 'package:culture_flutter_client/view_models/main_list_view_model.dart';
 import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
@@ -39,8 +38,6 @@ class MyApp extends StatelessWidget {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-    GetIt.I.registerFactory(() => MainListViewModel());
-
     return MultiProvider(
       providers: [
         ChangeNotifierProvider<MainListViewModel>(create: (_) => MainListViewModel())],
