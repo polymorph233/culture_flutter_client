@@ -70,7 +70,7 @@ extension on TextEditingValue {
 }
 
 class ChipsInput<T> extends StatefulWidget {
-  const ChipsInput({
+  ChipsInput({
     required Key key,
     this.decoration = const InputDecoration(),
     this.enabled = true,
@@ -112,7 +112,7 @@ class ChipsInput<T> extends StatefulWidget {
   final ChipsBuilder<T>? chipBuilder;
   final ValueChanged<String>? addChip;
   final Function()? deleteChip;
-  final Function()? onChangedTag;
+  final ValueChanged<Set<T>>? onChangedTag;
   final String separator;
   final ChipTextValidator chipTextValidator;
   final double chipSpacing;
@@ -343,7 +343,7 @@ class ChipsInputState<T> extends State<ChipsInput<T>> implements TextInputClient
         }
         _chips.add(newTag as T);
         if (widget.onChangedTag != null) {
-          widget.onChangedTag!();
+          widget.onChangedTag!(this._chips);
         }
         _enteredTags.add(newTag);
         _updateTextInput();
@@ -510,68 +510,4 @@ class ChipsInputState<T> extends State<ChipsInput<T>> implements TextInputClient
   void showToolbar() {
     // TODO: implement showToolbar
   }
-}
-
-class SampleWidget extends StatelessWidget {
-  const SampleWidget({Key? key}) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return MaterialApp(home: HomeWidget());
-  }
-}
-
-class HomeWidget extends StatelessWidget {
-  final GlobalKey<ChipsInputState> _chipKey = GlobalKey();
-
-  HomeWidget({Key? key}) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-
-    return Scaffold(
-      body: SafeArea(
-        child: Center(
-          child: ChipsInput(
-            key: _chipKey,
-            keyboardAppearance: Brightness.dark,
-            textCapitalization: TextCapitalization.words,
-            width: MediaQuery.of(context).size.width,
-            enabled: true,
-            maxChips: 5,
-            separator: ' ',
-            decoration: const InputDecoration(
-              hintText: 'Enter Tag...',
-            ),
-            initialTags: const [],
-            autofocus: true,
-            chipTextValidator: (String value) {
-              value.contains('!');
-              return -1;
-            },
-            chipBuilder: (context, state, String tag) {
-              return InputChip(
-                labelPadding: const EdgeInsets.only(left: 8.0, right: 3),
-                backgroundColor: Colors.white,
-                shape: const StadiumBorder(side: BorderSide(width: 1.8, color: Color.fromRGBO(228, 230, 235, 1))),
-                shadowColor: Colors.grey,
-                key: ObjectKey(tag),
-                label: Text(
-                  "# " + tag.toString(),
-                  textAlign: TextAlign.center,
-                ),
-                onDeleted: () => state.deleteChip(tag),
-                deleteIconColor: const Color.fromRGBO(138, 145, 151, 1),
-                materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
-              );
-            },
-          ),
-        ),
-      ),
-    );
-  }
-}
-
-void main() {
-  runApp(const SampleWidget());
 }
