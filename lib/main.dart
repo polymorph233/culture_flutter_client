@@ -1,11 +1,31 @@
-import 'package:culture_flutter_client/screens/LoginController.dart';
-import 'package:culture_flutter_client/screens/MainAppController.dart';
+import 'package:culture_flutter_client/screens/AuthChoiceScreen.dart';
+import 'package:culture_flutter_client/screens/LoginScreen.dart';
+import 'package:culture_flutter_client/screens/SignUpScreen.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:go_router/go_router.dart';
 
 void main() {
   runApp(const MyApp());
 }
+
+// GoRouter configuration
+final _router = GoRouter(
+  routes: [
+    GoRoute(
+      path: '/',
+      builder: (context, state) => const AuthChoiceScreen(),
+    ),
+    GoRoute(
+      path: '/signup',
+      builder: (context, state) => const SignUpScreen(),
+    ),
+    GoRoute(
+      path: "/login",
+      builder: (context, state) => const LoginScreen(),
+    )
+  ],
+);
 
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
@@ -13,24 +33,11 @@ class MyApp extends StatelessWidget {
   // This widgets is the root of your application.
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Flutter Demo',
-      theme: ThemeData(
-        primarySwatch: Colors.blue,
-      ),
-      home: const MyHomePage(title: 'Culture Festival'),
-    );
-  }
-
-  Widget handleAuth() {
-    return StreamBuilder(
-        stream: FirebaseAuth.instance.authStateChanges(),
-        builder: (BuildContext context, snapshot) {
-          if (snapshot.hasData) {
-            return new LoginController();
-          } else
-            return new MainAppController();
-        });
+    return MaterialApp.router(
+        // title: title,
+        // home: EntryPoint(title: title),
+        routerConfig: _router,
+        debugShowCheckedModeBanner: false);
   }
 }
 
@@ -59,72 +66,6 @@ class _MyHomePageState extends State<MyHomePage> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text(widget.title),
-      ),
-      body: Container(
-        width: double.infinity,
-        height: double.infinity,
-        decoration: BoxDecoration(
-          image: DecorationImage(
-              image: NetworkImage(
-                  'https://cdn.pixabay.com/photo/2015/11/22/19/04/crowd-1056764_960_720.jpg'),
-              fit: BoxFit.cover),
-        ),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            ElevatedButton(
-              style: ButtonStyle(
-                backgroundColor: MaterialStateProperty.all(Colors.white),
-                minimumSize: MaterialStateProperty.all(const Size(170, 50)),
-                side: MaterialStateProperty.all(
-                  const BorderSide(
-                    color: Colors.amberAccent,
-                    width: 2,
-                  ),
-                ),
-                shape: MaterialStateProperty.all(
-                  RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(50),
-                  ),
-                ),
-              ),
-              onPressed: null,
-              child: const Text('Log in',
-                  style: TextStyle(
-                      color: Colors.black,
-                      fontSize: 30,
-                      fontWeight: FontWeight.bold)),
-            ),
-            ElevatedButton(
-              style: ButtonStyle(
-                backgroundColor: MaterialStateProperty.all(Color(0xFFF9C305)),
-                minimumSize: MaterialStateProperty.all(const Size(170, 50)),
-                side: MaterialStateProperty.all(
-                  const BorderSide(
-                    color: Colors.black,
-                    width: 2,
-                  ),
-                ),
-                shape: MaterialStateProperty.all(
-                  RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(50),
-                  ),
-                ),
-              ),
-              onPressed: null,
-              child: const Text('Sign up',
-                  style: TextStyle(
-                      color: Colors.black,
-                      fontSize: 30,
-                      fontWeight: FontWeight.bold)),
-            ),
-          ],
-        ),
-      ),
-    );
-    // ),
+    return Scaffold();
   }
 }
