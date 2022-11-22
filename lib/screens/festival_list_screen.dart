@@ -1,4 +1,5 @@
 
+import 'package:culture_flutter_client/view_models/favorite_festival_list_view_model.dart';
 import 'package:culture_flutter_client/view_models/festival_list_view_model.dart';
 import 'package:culture_flutter_client/view_models/festival_view_model.dart';
 import 'package:flutter/material.dart';
@@ -46,7 +47,8 @@ class _FestivalListScreenState extends State<FestivalListScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final vm = Provider.of<FestivalListViewModel>(context);
+
+    final fav_vm = Provider.of<FavoriteFestivalListViewModel>(context);
 
     List<String> tags = [];
 
@@ -105,7 +107,8 @@ class _FestivalListScreenState extends State<FestivalListScreen> {
                   ],)
               ),
               Expanded(
-                  child: FestivalList(festivals: festivals, scrollController: ScrollController(),))//we will create this further down
+                  child: FestivalList(
+                    festivals: festivals, scrollController: ScrollController(), onAdd: (fest) => fav_vm.addFestival(fest)))//we will create this further down
             ])
         )
     );

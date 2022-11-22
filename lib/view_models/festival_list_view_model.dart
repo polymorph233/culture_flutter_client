@@ -1,9 +1,12 @@
 import 'package:culture_flutter_client/services/dummy_service.dart';
+import 'package:culture_flutter_client/view_models/i_festival_list_view_model.dart';
 import 'package:flutter/cupertino.dart';
 
 import 'festival_view_model.dart';
 
-class FestivalListViewModel extends ChangeNotifier {
+class FestivalListViewModel extends ChangeNotifier implements IFestivalListViewModel {
+
+  @override
   List<FestivalViewModel> festivals = <FestivalViewModel>[];
 
   Future<void> update() async {
