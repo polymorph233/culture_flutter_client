@@ -18,8 +18,7 @@ class AuthChoiceScreenState extends State<AuthChoiceScreen> {
         height: double.infinity,
         decoration: BoxDecoration(
           image: DecorationImage(
-              image: NetworkImage(
-                  'https://cdn.pixabay.com/photo/2015/11/22/19/04/crowd-1056764_960_720.jpg'),
+              image: AssetImage('assets/images/background_welcome_screen.jpg'),
               fit: BoxFit.cover),
         ),
         child: Column(

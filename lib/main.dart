@@ -1,6 +1,6 @@
-import 'package:culture_flutter_client/screens/AuthChoiceScreen.dart';
-import 'package:culture_flutter_client/screens/LoginScreen.dart';
-import 'package:culture_flutter_client/screens/SignUpScreen.dart';
+import 'package:culture_flutter_client/screens/auth_choice_screen.dart';
+import 'package:culture_flutter_client/screens/login_screen.dart';
+import 'package:culture_flutter_client/screens/sign_up_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:go_router/go_router.dart';
