@@ -146,20 +146,26 @@ class ChipsInputState<T> extends State<ChipsInput<T>> implements TextInputClient
       crossAxisAlignment: CrossAxisAlignment.stretch,
       //mainAxisSize: MainAxisSize.min,
       children: <Widget>[
-        GestureDetector(
-          behavior: HitTestBehavior.opaque,
-          onTap: requestKeyboard,
-          child: InputDecorator(
-            decoration: widget.decoration,
-            isFocused: _focusNode?.hasFocus ?? false,
-            isEmpty: _value.text.length == 0,
-            child: Wrap(
-              children: chipsChildren,
-              spacing: 4.0,
-              runSpacing: 4.0,
-            ),
-          ),
-        ),
+        Row(children:
+          <Widget>[
+            Expanded(child:
+              GestureDetector(
+                behavior: HitTestBehavior.opaque,
+                onTap: requestKeyboard,
+                child: InputDecorator(
+                  decoration: widget.decoration,
+                  isFocused: _focusNode?.hasFocus ?? false,
+                  isEmpty: _value.text.length == 0,
+                  child: Wrap(
+                    children: chipsChildren,
+                    spacing: 4.0,
+                    runSpacing: 4.0,
+                  ),
+                ))),
+            IconButton(onPressed: () {
+              updateEditingValue(TextEditingValue());
+            }, icon: const Icon(Icons.highlight_remove_outlined))
+          ]),
         Expanded(
           child: ListView.builder(
             itemCount: _suggestions?.length ?? 0,

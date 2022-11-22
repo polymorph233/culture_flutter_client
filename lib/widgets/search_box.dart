@@ -68,12 +68,13 @@ class _SearchBoxState extends State<SearchBox> {
   }
 
   Future<List<String>> _findSuggestions(String query) async {
-    if (query.length != 0) {
-      return mockResults.where((keyword) {
+    if (query.isNotEmpty) {
+      final results = mockResults.where((keyword) {
         return keyword.contains(query)  /* || keyword.contains(query) */;
       }).toList(growable: false);
+      return [query] + results;
     } else {
-      return [query];
+      return [];
     }
   }
 
