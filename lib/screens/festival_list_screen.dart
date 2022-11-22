@@ -1,8 +1,10 @@
 
-import 'package:culture_flutter_client/view_models/favorite_festival_list_view_model.dart';
-import 'package:culture_flutter_client/view_models/festival_list_view_model.dart';
 import 'package:culture_flutter_client/view_models/festival_view_model.dart';
+import 'package:culture_flutter_client/view_models/main_list_view_model.dart';
+import 'package:culture_flutter_client/widgets/fab.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_expandable_fab/flutter_expandable_fab.dart';
+import 'package:get_it/get_it.dart';
 import 'package:provider/provider.dart';
 
 import '../packages/text_cursor/text_cursor.dart';
@@ -21,9 +23,10 @@ class _FestivalListScreenState extends State<FestivalListScreen> {
   @override
   void initState() {
     super.initState();
-    final vm = Provider.of<FestivalListViewModel>(context, listen: false);
+    final vm = GetIt.instance.get<MainListViewModel>();
     
-    vm.update().then((_) => festivals = vm.festivals);
+    vm.update().then((_) =>
+    setState(() =>{ festivals = vm.festivals}));
   }
 
   @override
@@ -33,7 +36,7 @@ class _FestivalListScreenState extends State<FestivalListScreen> {
 
   void search(List<String> tags) {
     if (tags.isEmpty) {
-      final vm = Provider.of<FestivalListViewModel>(context, listen: false);
+      final vm = GetIt.instance.get<MainListViewModel>();
       setState(() {
         festivals = vm.festivals;
       });
@@ -48,7 +51,7 @@ class _FestivalListScreenState extends State<FestivalListScreen> {
   @override
   Widget build(BuildContext context) {
 
-    final fav_vm = Provider.of<FavoriteFestivalListViewModel>(context);
+    final vm = GetIt.instance.get<MainListViewModel>();
 
     List<String> tags = [];
 
@@ -56,7 +59,7 @@ class _FestivalListScreenState extends State<FestivalListScreen> {
 
     return Scaffold(
         appBar: AppBar(
-            title: const Text("Festivals")
+            title: const Text("All Festivals")
         ),
         body: Container(
             padding: const EdgeInsets.all(10),
@@ -108,7 +111,7 @@ class _FestivalListScreenState extends State<FestivalListScreen> {
               ),
               Expanded(
                   child: FestivalList(
-                    festivals: festivals, scrollController: ScrollController(), onAdd: (fest) => fav_vm.addFestival(fest)))//we will create this further down
+                    festivals: festivals, scrollController: ScrollController(), onAdd: (fest) => vm.addFavorite(fest)))//we will create this further down
             ])
         )
     );
@@ -119,37 +122,23 @@ class _FestivalListScreenState extends State<FestivalListScreen> {
 class FestivalListEntry extends StatefulWidget {
   const FestivalListEntry({super.key});
 
-  // This widget is the home page of your application. It is stateful, meaning
-  // that it has a State object (defined below) that contains fields that affect
-  // how it looks.
-
-  // This class is the configuration for the state. It holds the values (in this
-  // case the title) provided by the parent (in this case the App widget) and
-  // used by the build method of the State. Fields in a Widget subclass are
-  // always marked "final".
-
-  final String title = "All Festivals";
-
   @override
   State<FestivalListEntry> createState() => _FestivalListEntryState();
 }
 
 class _FestivalListEntryState extends State<FestivalListEntry> {
 
-  FestivalListViewModel festivalListViewModel = FestivalListViewModel();
 
   @override
   Widget build(BuildContext context) {
+    MainListViewModel mainListViewModel = GetIt.instance.get<MainListViewModel>();
     return Scaffold(
       body: ChangeNotifierProvider(
-        create: (context) => festivalListViewModel,
+        create: (context) => mainListViewModel,
         child: const FestivalListScreen(),
       ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () => {},
-        tooltip: 'TODO',
-        child: const Icon(Icons.check),
-      ), // This trailing comma makes auto-formatting nicer for build methods.
+      floatingActionButtonLocation: ExpandableFab.location,
+      floatingActionButton: const NavigationFab(currentPageType: PageType.festivalList)
     );
   }
 }

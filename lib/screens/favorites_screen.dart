@@ -1,8 +1,10 @@
 
-import 'package:culture_flutter_client/view_models/favorite_festival_list_view_model.dart';
-import 'package:culture_flutter_client/view_models/festival_list_view_model.dart';
 import 'package:culture_flutter_client/view_models/festival_view_model.dart';
+import 'package:culture_flutter_client/view_models/main_list_view_model.dart';
+import 'package:culture_flutter_client/widgets/fab.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_expandable_fab/flutter_expandable_fab.dart';
+import 'package:get_it/get_it.dart';
 import 'package:provider/provider.dart';
 
 import '../packages/text_cursor/text_cursor.dart';
@@ -21,9 +23,9 @@ class _FavoriteFestivalListScreenState extends State<FavoriteFestivalListScreen>
   @override
   void initState() {
     super.initState();
-    final vm = Provider.of<FavoriteFestivalListViewModel>(context, listen: false);
+    final vm = Provider.of<MainListViewModel>(context, listen: false);
 
-    favorites = vm.festivals;
+    favorites = vm.favorites;
   }
 
   @override
@@ -33,7 +35,7 @@ class _FavoriteFestivalListScreenState extends State<FavoriteFestivalListScreen>
 
   void search(List<String> tags) {
     if (tags.isEmpty) {
-      final vm = Provider.of<FavoriteFestivalListViewModel>(context);
+      final vm = Provider.of<MainListViewModel>(context, listen: false);
       setState(() {
         favorites = vm.favorites;
       });
@@ -46,24 +48,23 @@ class _FavoriteFestivalListScreenState extends State<FavoriteFestivalListScreen>
   }
 
   void add(FestivalViewModel fest) {
-    final vm = Provider.of<FavoriteFestivalListViewModel>(context);
+    final vm = Provider.of<MainListViewModel>(context, listen: false);
     setState(() {
-      vm.addFestival(fest);
+      vm.addFavorite(fest);
       favorites.add(fest);
     });
   }
 
   void remove(FestivalViewModel fest) {
-    final vm = Provider.of<FavoriteFestivalListViewModel>(context);
+    final vm = Provider.of<MainListViewModel>(context, listen: false);
     setState(() {
-      vm.removeFestival(fest);
+      vm.removeFavorite(fest);
       favorites.remove(fest);
     });
   }
 
   @override
   Widget build(BuildContext context) {
-    final vm = Provider.of<FestivalListViewModel>(context);
 
     List<String> tags = [];
 
@@ -133,31 +134,28 @@ class _FavoriteFestivalListScreenState extends State<FavoriteFestivalListScreen>
 }
 
 
-class FestivalListEntry extends StatefulWidget {
-  const FestivalListEntry({super.key});
+class FavoriteFestivalsEntry extends StatefulWidget {
+  const FavoriteFestivalsEntry({super.key});
 
   final String title = "All Festivals";
 
   @override
-  State<FestivalListEntry> createState() => _FestivalListEntryState();
+  State<FavoriteFestivalsEntry> createState() => _FavoriteFestivalsEntryState();
 }
 
-class _FestivalListEntryState extends State<FestivalListEntry> {
+class _FavoriteFestivalsEntryState extends State<FavoriteFestivalsEntry> {
 
-  FestivalListViewModel festivalListViewModel = FestivalListViewModel();
 
   @override
   Widget build(BuildContext context) {
+    MainListViewModel mainListViewModel = GetIt.instance.get<MainListViewModel>();
     return Scaffold(
       body: ChangeNotifierProvider(
-        create: (context) => festivalListViewModel,
+        create: (context) => mainListViewModel,
         child: const FavoriteFestivalListScreen(),
       ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () => {},
-        tooltip: 'TODO',
-        child: const Icon(Icons.check),
-      ), // This trailing comma makes auto-formatting nicer for build methods.
+      floatingActionButtonLocation: ExpandableFab.location,
+      floatingActionButton: const NavigationFab(currentPageType: PageType.favorites),
     );
   }
 }

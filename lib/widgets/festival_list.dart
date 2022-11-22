@@ -24,7 +24,7 @@ class FestivalList extends StatelessWidget {
 
           final item = festivals[index];
 
-          if (this.onAdd != null && this.onDelete != null) {
+          if (this.onAdd != null || this.onDelete != null) {
             return FestivalWidget(festival: item, onAdd: onAdd, onDelete: onDelete,);
           } else {
             return FestivalWidget(festival: item);
@@ -66,7 +66,7 @@ class FestivalWidget extends StatelessWidget {
         onPressed: () => onDelete!(festival), icon: const Icon(Icons.remove));
       widgets.add(removeIcon);
     }
-    if (onAdd != null && onDelete != null) {
+    if (onAdd != null || onDelete != null) {
       return Row(children: widgets);
     } else {
       return card;

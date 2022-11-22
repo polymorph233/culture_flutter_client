@@ -1,7 +1,9 @@
 
 import 'package:culture_flutter_client/view_models/festival_list_view_model.dart';
+import 'package:culture_flutter_client/widgets/fab.dart';
 import 'package:culture_flutter_client/widgets/festival_carousel.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_expandable_fab/flutter_expandable_fab.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 
@@ -104,11 +106,8 @@ class _WelcomeScreenEntryState extends State<WelcomeScreenEntry> {
         create: (context) => festivalListViewModel,
         child: const WelcomeScreen(),
       ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () => {},
-        tooltip: 'TODO',
-        child: const Icon(Icons.check),
-      ), // This trailing comma makes auto-formatting nicer for build methods.
+      floatingActionButtonLocation: ExpandableFab.location,
+      floatingActionButton: const NavigationFab(currentPageType: PageType.welcome)
     );
   }
 }
