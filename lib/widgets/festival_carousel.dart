@@ -90,18 +90,20 @@ class FestivalCarouselState extends State<FestivalCarousel> {
                             ),
                           ),
                           padding: const EdgeInsets.symmetric(
-                              vertical: 10.0, horizontal: 20.0),
-                          child: Text(
-                            item.name,
-                            style: const TextStyle(
-                              color: Colors.white,
-                              fontSize: 20.0,
-                              fontWeight: FontWeight.bold,
+                              vertical: 15.0, horizontal: 15.0),
+                          child: Row(children: [
+                            Icon(categoryIcon(item.domain), color: Colors.white),
+                            Text(
+                              "   ${item.name}",
+                              style: const TextStyle(
+                                color: Colors.white,
+                                fontSize: 20.0,
+                                fontWeight: FontWeight.bold,
+                              ),
                             ),
-                          ),
-                        ),
+                          ]),
                       ),
-                    ],
+                      )],
                   )),
               ))
               .toList(),

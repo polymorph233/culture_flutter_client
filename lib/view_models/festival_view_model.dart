@@ -3,6 +3,7 @@
 import 'package:osm_nominatim/osm_nominatim.dart';
 
 import '../models/festival.dart';
+import '../services/dummy_service.dart';
 
 class FestivalViewModel {
   final Festival model;
@@ -65,4 +66,24 @@ class FestivalViewModel {
       case Domain.liveScene: return "live scene";
     }
   }
+
+  static String getLabelBySuggestType(SuggestionType type, FestivalViewModel viewModel) {
+    switch (type) {
+      case SuggestionType.rawName:
+        return "${viewModel.name} ${viewModel.principalRegion} ${viewModel.principalCommune} ${viewModel.principalDepartment} ${viewModel.principalPeriod}";
+      case SuggestionType.festival:
+        return viewModel.name;
+      case SuggestionType.region:
+        return viewModel.principalRegion;
+      case SuggestionType.department:
+        return viewModel.principalDepartment;
+      case SuggestionType.commune:
+        return viewModel.principalCommune;
+      case SuggestionType.period:
+        return viewModel.principalPeriod;
+      case SuggestionType.domain:
+        return FestivalViewModel.stringOfDomain(viewModel.domain);
+    }
+  }
 }
+

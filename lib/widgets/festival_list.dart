@@ -47,17 +47,6 @@ class FestivalWidget extends StatelessWidget {
   final ValueChanged<int> onClick;
 
   const FestivalWidget({super.key, required this.festival, required this.isLiked, this.onAdd, this.onDelete, required this.onClick});
-
-  IconData categoryIcon(Domain domain) {
-    switch (domain) {
-      case Domain.visualNumericArts: return Icons.palette;
-      case Domain.cinema: return Icons.theaters;
-      case Domain.literature: return Icons.auto_stories;
-      case Domain.music: return Icons.music_note;
-      case Domain.pluridiscipline: return Icons.hub;
-      case Domain.liveScene: return Icons.theater_comedy;
-    }
-  }
   
   @override
   Widget build(BuildContext context) {

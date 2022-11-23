@@ -2,6 +2,8 @@
 
 // Data structure from OpenData, to be replaced by the Firebase API facet
 
+import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:osm_nominatim/osm_nominatim.dart';
 
 enum TerritorialSize {
@@ -10,6 +12,17 @@ enum TerritorialSize {
 
 enum Domain {
   visualNumericArts, cinema, literature, music, pluridiscipline, liveScene,
+}
+
+IconData categoryIcon(Domain domain) {
+  switch (domain) {
+    case Domain.visualNumericArts: return Icons.palette;
+    case Domain.cinema: return Icons.theaters;
+    case Domain.literature: return Icons.auto_stories;
+    case Domain.music: return Icons.music_note;
+    case Domain.pluridiscipline: return Icons.hub;
+    case Domain.liveScene: return Icons.theater_comedy;
+  }
 }
 
 String festivalToString(TerritorialSize ts) {
