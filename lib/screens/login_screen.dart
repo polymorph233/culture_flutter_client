@@ -1,11 +1,15 @@
 import 'package:culture_flutter_client/main.dart';
+import 'package:culture_flutter_client/screens/forgot_password_screen.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 
+import '../services/utils.dart';
+
 class LoginScreen extends StatefulWidget {
   final VoidCallback onClickedSignUp;
+
   const LoginScreen({Key? key, required this.onClickedSignUp})
       : super(key: key);
 
@@ -41,22 +45,21 @@ class LoginScreenState extends State<LoginScreen> {
         ),
       ),
       body: SingleChildScrollView(
+        padding: EdgeInsets.all(16),
         child: Center(
           child: new Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: <Widget>[
               Text(
-                'LOG IN',
+                'Welcome Back!',
                 style: TextStyle(
                     fontWeight: FontWeight.bold,
-                    fontSize: 40,
+                    fontSize: 35,
                     color: Colors.black),
               ),
               Divider(),
               Padding(padding: EdgeInsets.only(bottom: 20)),
               Container(
-                height: MediaQuery.of(context).size.height * 0.7,
-                width: MediaQuery.of(context).size.width * 0.9,
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: <Widget>[
@@ -68,6 +71,7 @@ class LoginScreenState extends State<LoginScreen> {
                         hintText: 'Your email',
                       ),
                     ),
+                    SizedBox(height: 4),
                     TextField(
                       controller: passwordController,
                       textInputAction: TextInputAction.done,
@@ -76,33 +80,49 @@ class LoginScreenState extends State<LoginScreen> {
                         hintText: 'Your password',
                       ),
                     ),
-                    Padding(padding: EdgeInsets.only(bottom: 40)),
+                    SizedBox(height: 20),
+                    ElevatedButton.icon(
+                      style: ElevatedButton.styleFrom(
+                          minimumSize: Size.fromHeight(50)),
+                      icon: Icon(Icons.lock_open, size: 32),
+                      label: Text(
+                        'Sign in',
+                        style: TextStyle(fontSize: 24),
+                      ),
+                      onPressed: signIn,
+                    ),
+                    SizedBox(height: 24),
+                    GestureDetector(
+                      child: Text(
+                        'Forgot Password?',
+                        style: TextStyle(
+                          decoration: TextDecoration.underline,
+                          color: Colors.black,
+                          fontSize: 20,
+                        ),
+                      ),
+                      onTap: () => Navigator.of(context).push(
+                        MaterialPageRoute(
+                            builder: (context) => ForgotPasswordScreen()),
+                      ),
+                    ),
+                    SizedBox(height: 16),
+                    RichText(
+                        text: TextSpan(
+                            style: TextStyle(color: Colors.black, fontSize: 15),
+                            text: 'No account?   ',
+                            children: [
+                          TextSpan(
+                              recognizer: TapGestureRecognizer()
+                                ..onTap = widget.onClickedSignUp,
+                              text: 'Sign Up',
+                              style: TextStyle(
+                                decoration: TextDecoration.underline,
+                              ))
+                        ]))
                   ],
                 ),
               ),
-              ElevatedButton.icon(
-                style:
-                    ElevatedButton.styleFrom(minimumSize: Size.fromHeight(50)),
-                icon: Icon(Icons.lock_open, size: 32),
-                label: Text(
-                  'Sign in',
-                  style: TextStyle(fontSize: 24),
-                ),
-                onPressed: signIn,
-              ),
-              RichText(
-                  text: TextSpan(
-                      style: TextStyle(color: Colors.black, fontSize: 12),
-                      text: 'No account?',
-                      children: [
-                    TextSpan(
-                        recognizer: TapGestureRecognizer()
-                          ..onTap = widget.onClickedSignUp,
-                        text: 'Sign Up',
-                        style: TextStyle(
-                          decoration: TextDecoration.underline,
-                        ))
-                  ]))
             ],
           ),
         ),
@@ -123,6 +143,7 @@ class LoginScreenState extends State<LoginScreen> {
       );
     } on FirebaseAuthException catch (e) {
       print(e);
+      Utils.showSnackBar(e.message);
     }
     navigatorKey.currentState!.popUntil((route) => route.isFirst);
   }

@@ -3,12 +3,11 @@ import 'package:culture_flutter_client/screens/auth_screen.dart';
 import 'package:culture_flutter_client/screens/home_screen.dart';
 import 'package:culture_flutter_client/screens/login_screen.dart';
 import 'package:culture_flutter_client/screens/sign_up_screen.dart';
-import 'package:flutter/material.dart';
+import 'package:culture_flutter_client/services/utils.dart';
+import 'package:culture_flutter_client/services/utils.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:go_router/go_router.dart';
 import 'package:firebase_core/firebase_core.dart';
-import 'package:provider/provider.dart';
-import 'firebase_options.dart';
+import 'package:flutter/material.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -24,6 +23,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      scaffoldMessengerKey: Utils.messengerKey,
       navigatorKey: navigatorKey,
       routes: {
         '/signup': (context) => SignUpScreen(
@@ -57,7 +57,7 @@ class MainPage extends StatelessWidget {
             else if (snapshot.hasData) {
               return HomeScreen();
             } else {
-              return AuthScreen();
+              return AuthChoiceScreen();
             }
           }),
     );

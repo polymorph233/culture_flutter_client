@@ -1,9 +1,10 @@
 import 'package:culture_flutter_client/main.dart';
+import 'package:culture_flutter_client/services/utils.dart';
+import 'package:email_validator/email_validator.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/cupertino.dart';
-import 'package:firebase_auth/firebase_auth.dart';
-import 'package:go_router/go_router.dart';
 
 class SignUpScreen extends StatefulWidget {
   final Function() onClickedSignIn;
@@ -18,6 +19,7 @@ class SignUpScreen extends StatefulWidget {
 }
 
 class SignUpScreenState extends State<SignUpScreen> {
+  final formKey = GlobalKey<FormState>();
   final emailController = TextEditingController();
   final passwordController = TextEditingController();
 
@@ -46,45 +48,52 @@ class SignUpScreenState extends State<SignUpScreen> {
         ),
       ),
       body: SingleChildScrollView(
-        child: Center(
-          child: new Column(
+        padding: EdgeInsets.all(16),
+        child: Form(
+          key: formKey,
+          child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
-            children: <Widget>[
+            children: [
+              SizedBox(height: 60),
+              FlutterLogo(size: 120),
+              SizedBox(height: 20),
               Text(
                 'SIGN UP',
+                textAlign: TextAlign.center,
                 style: TextStyle(
                     fontWeight: FontWeight.bold,
                     fontSize: 40,
                     color: Colors.black),
               ),
               Divider(),
-              Padding(padding: EdgeInsets.only(bottom: 20)),
-              Container(
-                height: MediaQuery.of(context).size.height * 0.7,
-                width: MediaQuery.of(context).size.width * 0.9,
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: <Widget>[
-                    TextField(
-                      controller: emailController,
-                      textInputAction: TextInputAction.next,
-                      keyboardType: TextInputType.emailAddress,
-                      decoration: InputDecoration(
-                        hintText: 'Your email',
-                      ),
-                    ),
-                    TextField(
-                      controller: passwordController,
-                      textInputAction: TextInputAction.next,
-                      obscureText: true,
-                      decoration: InputDecoration(
-                        hintText: 'Your password',
-                      ),
-                    ),
-                    Padding(padding: EdgeInsets.only(bottom: 40)),
-                  ],
+              SizedBox(height: 40),
+              TextFormField(
+                controller: emailController,
+                textInputAction: TextInputAction.next,
+                keyboardType: TextInputType.emailAddress,
+                decoration: InputDecoration(
+                  hintText: 'Your email',
                 ),
+                autovalidateMode: AutovalidateMode.onUserInteraction,
+                validator: (email) =>
+                    email != null && !EmailValidator.validate(email)
+                        ? 'Enter a valid email'
+                        : null,
               ),
+              SizedBox(height: 4),
+              TextFormField(
+                controller: passwordController,
+                textInputAction: TextInputAction.next,
+                obscureText: true,
+                decoration: InputDecoration(
+                  hintText: 'Your password',
+                ),
+                autovalidateMode: AutovalidateMode.onUserInteraction,
+                validator: (value) => value != null && value.length < 6
+                    ? 'Enter min. 6 characters'
+                    : null,
+              ),
+              SizedBox(height: 20),
               ElevatedButton.icon(
                 style:
                     ElevatedButton.styleFrom(minimumSize: Size.fromHeight(50)),
@@ -117,6 +126,9 @@ class SignUpScreenState extends State<SignUpScreen> {
   }
 
   Future signUp() async {
+    final isValid = formKey.currentState!.validate();
+    if (!isValid) return;
+
     showDialog(
         context: context,
         barrierDismissible: false,
@@ -128,6 +140,7 @@ class SignUpScreenState extends State<SignUpScreen> {
       );
     } on FirebaseAuthException catch (e) {
       print(e);
+      Utils.showSnackBar(e.message);
     }
 
     navigatorKey.currentState!.popUntil((route) => route.isFirst);

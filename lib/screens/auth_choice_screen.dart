@@ -1,3 +1,5 @@
+import 'package:culture_flutter_client/screens/login_screen.dart';
+import 'package:culture_flutter_client/screens/sign_up_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -5,6 +7,7 @@ import 'package:go_router/go_router.dart';
 
 class AuthChoiceScreen extends StatefulWidget {
   const AuthChoiceScreen({super.key});
+
   @override
   AuthChoiceScreenState createState() => new AuthChoiceScreenState();
 }
@@ -22,8 +25,13 @@ class AuthChoiceScreenState extends State<AuthChoiceScreen> {
               fit: BoxFit.cover),
         ),
         child: Column(
-          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+          mainAxisAlignment: MainAxisAlignment.center,
           children: [
+            Image(
+              image: AssetImage('assets/images/logo.png'),
+              width: 150,
+            ),
+            SizedBox(height: 300),
             ElevatedButton(
               style: ButtonStyle(
                 backgroundColor: MaterialStateProperty.all(Colors.white),
@@ -47,6 +55,7 @@ class AuthChoiceScreenState extends State<AuthChoiceScreen> {
                       fontSize: 30,
                       fontWeight: FontWeight.bold)),
             ),
+            SizedBox(height: 30),
             ElevatedButton(
               style: ButtonStyle(
                 backgroundColor: MaterialStateProperty.all(Color(0xFFF9C305)),
