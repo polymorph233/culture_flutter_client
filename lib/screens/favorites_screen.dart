@@ -65,6 +65,8 @@ class _FavoriteFestivalListScreenState extends State<FavoriteFestivalListScreen>
         return viewModel.principalCommune;
       case SuggestionType.period:
         return viewModel.principalPeriod;
+      case SuggestionType.domain:
+        return FestivalViewModel.stringOfDomain(viewModel.domain);
     }
   }
 

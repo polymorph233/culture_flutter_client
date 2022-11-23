@@ -50,4 +50,19 @@ class FestivalViewModel {
   Place? get place {
     return model.place;
   }
+
+  Domain get domain {
+    return model.domain;
+  }
+
+  static String stringOfDomain(Domain domain) {
+    switch (domain) {
+      case Domain.visualNumericArts: return "visual numeric arts";
+      case Domain.cinema: return "cinema";
+      case Domain.literature: return "literature";
+      case Domain.music: return "music";
+      case Domain.pluridiscipline: return "pluridiscipline";
+      case Domain.liveScene: return "live scene";
+    }
+  }
 }

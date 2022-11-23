@@ -2,6 +2,8 @@ import 'package:culture_flutter_client/view_models/festival_view_model.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter/material.dart';
 
+import '../models/festival.dart';
+
 class FestivalList extends StatelessWidget {
 
   final List<FestivalViewModel> festivals;
@@ -46,6 +48,17 @@ class FestivalWidget extends StatelessWidget {
 
   const FestivalWidget({super.key, required this.festival, required this.isLiked, this.onAdd, this.onDelete, required this.onClick});
 
+  IconData categoryIcon(Domain domain) {
+    switch (domain) {
+      case Domain.visualNumericArts: return Icons.palette;
+      case Domain.cinema: return Icons.theaters;
+      case Domain.literature: return Icons.auto_stories;
+      case Domain.music: return Icons.music_note;
+      case Domain.pluridiscipline: return Icons.hub;
+      case Domain.liveScene: return Icons.theater_comedy;
+    }
+  }
+  
   @override
   Widget build(BuildContext context) {
     Widget card = InkWell(
@@ -54,7 +67,7 @@ class FestivalWidget extends StatelessWidget {
       margin: const EdgeInsets.all(10),
       child: ListTile(
         leading: CircleAvatar(
-          child: Text(festival.name.substring(0, 2)),
+          child: Icon(categoryIcon(festival.domain)),
         ),
         title: Text(festival.name),
         subtitle: Text(festival.principalPeriod),

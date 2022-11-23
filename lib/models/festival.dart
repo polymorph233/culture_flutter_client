@@ -8,6 +8,10 @@ enum TerritorialSize {
   communal, intercommunal, departmental, interdepartmental, regional, interregional, national, crossBorder
 }
 
+enum Domain {
+  visualNumericArts, cinema, literature, music, pluridiscipline, liveScene,
+}
+
 String festivalToString(TerritorialSize ts) {
   switch (ts) {
 
@@ -33,9 +37,10 @@ class Festival {
   final int? zipCode;
   final int inseeCode;
   final Place? place;
+  final Domain domain;
 
   // And other fields...
 
-  Festival({required this.name, this.territorialSize, required this.principalRegion, required this.principalDepartment, required this.principalCommune, required this.principalPeriod, this.officialSite, this.zipCode, required this.inseeCode, this.place});
+  Festival({required this.name, this.territorialSize, required this.principalRegion, required this.principalDepartment, required this.principalCommune, required this.principalPeriod, this.officialSite, this.zipCode, required this.inseeCode, this.place, required this.domain});
 
 }
