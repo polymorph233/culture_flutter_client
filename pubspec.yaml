@@ -53,6 +53,7 @@ dependencies:
 
   latlong2: ^0.8.1
   flutter_map_marker_cluster: ^1.0.1
+  share_plus: ^6.3.0
 
 dev_dependencies:
   flutter_test:

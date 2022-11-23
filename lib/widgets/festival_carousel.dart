@@ -69,7 +69,10 @@ class FestivalCarouselState extends State<FestivalCarousel> {
                   borderRadius: const BorderRadius.all(Radius.circular(5.0)),
                   child: Stack(
                     children: <Widget>[
-                      randomImage(item.domain),
+                      FittedBox(
+                        fit: BoxFit.fill,
+                        child: randomImage(item.domain),
+                      ),
                       Positioned(
                         bottom: 0.0,
                         left: 0.0,
@@ -104,7 +107,6 @@ class FestivalCarouselState extends State<FestivalCarousel> {
               options: CarouselOptions(
                 autoPlay: true,
                 enlargeCenterPage: true,
-                aspectRatio: 2.0,
                 onPageChanged: (index, reason) {
                   setState(() {
                     _current = index;
