@@ -6,6 +6,8 @@ class FestivalList extends StatelessWidget {
 
   final List<FestivalViewModel> festivals;
 
+  final List<FestivalViewModel> favorites;
+
   final ScrollController scrollController;
 
   final ValueChanged<FestivalViewModel>? onAdd;
@@ -14,7 +16,7 @@ class FestivalList extends StatelessWidget {
 
   final ValueChanged<int> onClick;
 
-  const FestivalList({super.key, required this.festivals, required this.scrollController,
+  const FestivalList({super.key, required this.festivals, required this.favorites, required this.scrollController,
     this.onAdd, this.onDelete, required this.onClick});
 
   @override
@@ -26,7 +28,7 @@ class FestivalList extends StatelessWidget {
 
           final item = festivals[index];
 
-          return FestivalWidget(festival: item, onAdd: onAdd, onDelete: onDelete, onClick: onClick);
+          return FestivalWidget(festival: item, isLiked: favorites.contains(item), onAdd: onAdd, onDelete: onDelete, onClick: onClick);
         });
   }
 }
@@ -34,13 +36,15 @@ class FestivalList extends StatelessWidget {
 class FestivalWidget extends StatelessWidget {
   final FestivalViewModel festival;
 
+  final bool isLiked;
+
   final ValueChanged<FestivalViewModel>? onAdd;
 
   final ValueChanged<FestivalViewModel>? onDelete;
 
   final ValueChanged<int> onClick;
 
-  const FestivalWidget({super.key, required this.festival, this.onAdd, this.onDelete, required this.onClick});
+  const FestivalWidget({super.key, required this.festival, required this.isLiked, this.onAdd, this.onDelete, required this.onClick});
 
   @override
   Widget build(BuildContext context) {
@@ -59,14 +63,13 @@ class FestivalWidget extends StatelessWidget {
 
     List<Widget> widgets = [Expanded(child: card)];
 
-    if (onAdd != null) {
+    if (!isLiked) {
       Widget addIcon = IconButton(
-        onPressed: () => onAdd!(festival), icon: const Icon(Icons.add));
+          onPressed: () => onAdd!(festival), icon: const Icon(Icons.favorite_outline));
       widgets.add(addIcon);
-    }
-    if (onDelete != null) {
+    } else {
       Widget removeIcon = IconButton(
-        onPressed: () => onDelete!(festival), icon: const Icon(Icons.remove));
+          onPressed: () => onDelete!(festival), icon: const Icon(Icons.favorite));
       widgets.add(removeIcon);
     }
     if (onAdd != null || onDelete != null) {

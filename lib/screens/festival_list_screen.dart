@@ -99,8 +99,9 @@ class _FestivalListScreenState extends State<FestivalListScreen> {
               ),
               Expanded(
                   child: FestivalList(
-                    festivals: festivals, scrollController: ScrollController(),
+                    festivals: festivals, favorites: vm.favorites, scrollController: ScrollController(),
                     onAdd: (fest) => vm.addFavorite(fest),
+                    onDelete: (fest) => vm.removeFavorite(fest),
                     onClick: (id) =>
                         context.pushNamed('festival', params: {"id": id.toString()})))//we will create this further down
             ])
