@@ -1,4 +1,5 @@
 
+import 'package:culture_flutter_client/services/dummy_service.dart';
 import 'package:culture_flutter_client/view_models/festival_view_model.dart';
 import 'package:culture_flutter_client/view_models/main_list_view_model.dart';
 import 'package:culture_flutter_client/widgets/fab.dart';
@@ -36,7 +37,7 @@ class _FestivalListScreenState extends State<FestivalListScreen> {
     super.dispose();
   }
 
-  void search(List<String> tags) {
+  void search(List<Suggestion> tags) {
     if (tags.isEmpty) {
       final vm = Provider.of<MainListViewModel>(context, listen: false);
       setState(() {
@@ -45,8 +46,25 @@ class _FestivalListScreenState extends State<FestivalListScreen> {
     } else {
       setState(() {
         festivals = festivals.where((entry) =>
-          tags.any((tag) => entry.name.contains(tag))).toList();
+          tags.any((tag) => getLabelBySuggestType(tag.type, entry).toLowerCase().contains(tag.content))).toList();
       });
+    }
+  }
+
+  String getLabelBySuggestType(SuggestionType type, FestivalViewModel viewModel) {
+    switch (type) {
+      case SuggestionType.rawName:
+        return "${viewModel.name} ${viewModel.principalRegion} ${viewModel.principalCommune} ${viewModel.principalDepartment} ${viewModel.principalPeriod}";
+      case SuggestionType.festival:
+        return viewModel.name;
+      case SuggestionType.region:
+        return viewModel.principalRegion;
+      case SuggestionType.department:
+        return viewModel.principalDepartment;
+      case SuggestionType.commune:
+        return viewModel.principalCommune;
+      case SuggestionType.period:
+        return viewModel.principalPeriod;
     }
   }
 
@@ -55,7 +73,7 @@ class _FestivalListScreenState extends State<FestivalListScreen> {
 
     final vm = Provider.of<MainListViewModel>(context);
 
-    List<String> tags = [];
+    List<Suggestion> tags = [];
 
     final GlobalKey<ChipsInputState> _chipKey = GlobalKey();
 
@@ -70,11 +88,11 @@ class _FestivalListScreenState extends State<FestivalListScreen> {
             child: Column(children: <Widget>[
               Container(
                 child: Expanded(child: SearchBox(
-                  onTapped: (String value) {
+                  onTapped: (Suggestion value) {
                     tags.remove(value);
                     search(tags);
                   },
-                  onChanged: (List<String> value) {
+                  onChanged: (List<Suggestion> value) {
                     tags = value;
                     search(tags);
                   }))

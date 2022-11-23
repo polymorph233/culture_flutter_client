@@ -64,23 +64,23 @@ class DummyService {
       return _suggestions;
     } else {
       final names = queue.map((e) =>
-          Suggestion(icon: Icons.festival_outlined, content: e.name)).toSet();
+          Suggestion(icon: Icons.festival_outlined, type: SuggestionType.festival, present: e.name, content: e.name.toLowerCase())).toSet();
       final regions = queue.map((e) =>
-          Suggestion(icon: Icons.map_outlined, content: e.principalRegion))
+          Suggestion(icon: Icons.map_outlined, type: SuggestionType.region, present: e.principalRegion, content: e.principalRegion.toLowerCase()))
           .toSet();
       final departments = queue.map((e) =>
-          Suggestion(icon: Icons.map_rounded, content: e.principalDepartment))
+          Suggestion(icon: Icons.map_rounded, type: SuggestionType.department, present: e.principalDepartment, content: e.principalDepartment.toLowerCase()))
           .toSet();
-      final communs = queue.map((e) =>
-          Suggestion(icon: Icons.location_city, content: e.principalCommune))
+      final communes = queue.map((e) =>
+          Suggestion(icon: Icons.location_city, type: SuggestionType.commune, present: e.principalCommune, content: e.principalCommune.toLowerCase()))
           .toSet();
       final periods = queue.map((e) =>
-          Suggestion(icon: Icons.date_range, content: e.principalPeriod))
+          Suggestion(icon: Icons.date_range, type: SuggestionType.period, present: e.principalPeriod, content: e.principalPeriod.toLowerCase()))
           .toSet();
       _suggestions.addAll(names);
       _suggestions.addAll(regions);
       _suggestions.addAll(departments);
-      _suggestions.addAll(communs);
+      _suggestions.addAll(communes);
       _suggestions.addAll(periods);
       return _suggestions;
     }
@@ -101,9 +101,15 @@ class DummyService {
   }
 }
 
+enum SuggestionType {
+  rawName, festival, region, department, commune, period,
+}
+
 class Suggestion {
   final IconData icon;
+  final SuggestionType type;
+  final String present;
   final String content;
 
-  Suggestion({required this.icon, required this.content});
+  Suggestion({required this.icon, required this.type, required this.present, required this.content});
 }

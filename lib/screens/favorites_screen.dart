@@ -9,6 +9,7 @@ import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 
 import '../packages/text_cursor/text_cursor.dart';
+import '../services/dummy_service.dart';
 import '../widgets/festival_list.dart';
 import '../widgets/search_box.dart';
 
@@ -35,7 +36,7 @@ class _FavoriteFestivalListScreenState extends State<FavoriteFestivalListScreen>
     super.dispose();
   }
 
-  void search(List<String> tags) {
+  void search(List<Suggestion> tags) {
     if (tags.isEmpty) {
       final vm = Provider.of<MainListViewModel>(context, listen: false);
       setState(() {
@@ -44,8 +45,26 @@ class _FavoriteFestivalListScreenState extends State<FavoriteFestivalListScreen>
     } else {
       setState(() {
         favorites = favorites.where((entry) =>
-            tags.any((tag) => entry.name.contains(tag))).toList();
+            tags.any((tag) => getLabelBySuggestType(tag.type, entry).toLowerCase().contains(tag.content))).toList();
       });
+    }
+  }
+
+
+  String getLabelBySuggestType(SuggestionType type, FestivalViewModel viewModel) {
+    switch (type) {
+      case SuggestionType.rawName:
+        return "${viewModel.name} ${viewModel.principalRegion} ${viewModel.principalCommune} ${viewModel.principalDepartment} ${viewModel.principalPeriod}";
+      case SuggestionType.festival:
+        return viewModel.name;
+      case SuggestionType.region:
+        return viewModel.principalRegion;
+      case SuggestionType.department:
+        return viewModel.principalDepartment;
+      case SuggestionType.commune:
+        return viewModel.principalCommune;
+      case SuggestionType.period:
+        return viewModel.principalPeriod;
     }
   }
 
@@ -68,7 +87,7 @@ class _FavoriteFestivalListScreenState extends State<FavoriteFestivalListScreen>
   @override
   Widget build(BuildContext context) {
 
-    List<String> tags = [];
+    List<Suggestion> tags = [];
 
     final GlobalKey<ChipsInputState> _chipKey = GlobalKey();
 
@@ -83,11 +102,11 @@ class _FavoriteFestivalListScreenState extends State<FavoriteFestivalListScreen>
             child: Column(children: <Widget>[
               Container(
                 child: Expanded(child: SearchBox(
-                onTapped: (String value) {
+                onTapped: (Suggestion value) {
                   tags.remove(value);
                   search(tags);
                 },
-                onChanged: (List<String> value) {
+                onChanged: (List<Suggestion> value) {
                   tags = value;
                   search(tags);
                 }))
