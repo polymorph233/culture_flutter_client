@@ -1,52 +1,66 @@
 import 'package:culture_flutter_client/screens/auth_choice_screen.dart';
+import 'package:culture_flutter_client/screens/auth_screen.dart';
+import 'package:culture_flutter_client/screens/home_screen.dart';
 import 'package:culture_flutter_client/screens/login_screen.dart';
 import 'package:culture_flutter_client/screens/sign_up_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:go_router/go_router.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:provider/provider.dart';
 import 'firebase_options.dart';
 
-void main() {
-  runApp(const MyApp());
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp();
+  runApp(MyApp());
 }
 
-Future<void> initializeDefault() async {
-  FirebaseApp app = await Firebase.initializeApp(
-    options: DefaultFirebaseOptions.currentPlatform,
-  );
-  print('Initialized default app $app');
-}
-
-// GoRouter configuration
-final _router = GoRouter(
-  routes: [
-    GoRoute(
-      path: '/',
-      builder: (context, state) => const AuthChoiceScreen(),
-    ),
-    GoRoute(
-      path: '/signup',
-      builder: (context, state) => const SignUpScreen(),
-    ),
-    GoRoute(
-      path: "/login",
-      builder: (context, state) => const LoginScreen(),
-    )
-  ],
-);
+final navigatorKey = GlobalKey<NavigatorState>();
 
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
 
-  // This widgets is the root of your application.
   @override
   Widget build(BuildContext context) {
-    return MaterialApp.router(
-        // title: title,
-        // home: EntryPoint(title: title),
-        routerConfig: _router,
-        debugShowCheckedModeBanner: false);
+    return MaterialApp(
+      navigatorKey: navigatorKey,
+      routes: {
+        '/signup': (context) => SignUpScreen(
+              onClickedSignIn: () {},
+            ),
+        '/auth': (context) => AuthChoiceScreen(),
+        '/login': (context) => LoginScreen(
+              onClickedSignUp: () {},
+            ),
+        '/home': (context) => HomeScreen()
+      },
+      home: MainPage(),
+      debugShowCheckedModeBanner: false,
+    );
+  }
+}
+
+class MainPage extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      body: StreamBuilder<User?>(
+          stream: FirebaseAuth.instance.authStateChanges(),
+          builder: (context, snapshot) {
+            if (snapshot.connectionState == ConnectionState.waiting) {
+              return Center(child: CircularProgressIndicator());
+            } else if (snapshot.hasError) {
+              return Center(child: Text('Something went wrong!'));
+            }
+            //if user is sign in
+            else if (snapshot.hasData) {
+              return HomeScreen();
+            } else {
+              return AuthScreen();
+            }
+          }),
+    );
   }
 }
 

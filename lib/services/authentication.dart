@@ -41,8 +41,13 @@ class Authentication {
     await FirebaseAuth.instance.signOut();
   }
 
-  Stream<User> get user {
-    var _auth;
-    return _auth.authStateChanges();
+  Future? getUser() async {
+    FirebaseAuth.instance.authStateChanges().listen((User? user) {
+      if (user == null) {
+        print('User is currently signed out!');
+      } else {
+        print('User is signed in!');
+      }
+    });
   }
 }

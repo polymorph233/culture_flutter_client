@@ -40,7 +40,7 @@ class AuthChoiceScreenState extends State<AuthChoiceScreen> {
                   ),
                 ),
               ),
-              onPressed: () => context.go("/login"),
+              onPressed: () => Navigator.pushNamed(context, '/login'),
               child: const Text('Log in',
                   style: TextStyle(
                       color: Colors.black,
@@ -63,7 +63,7 @@ class AuthChoiceScreenState extends State<AuthChoiceScreen> {
                   ),
                 ),
               ),
-              onPressed: () => context.go("/signup"),
+              onPressed: () => Navigator.pushNamed(context, '/signup'),
               child: const Text('Sign up',
                   style: TextStyle(
                       color: Colors.black,

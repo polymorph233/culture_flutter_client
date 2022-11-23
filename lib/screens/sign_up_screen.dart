@@ -1,23 +1,34 @@
+import 'package:culture_flutter_client/main.dart';
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:go_router/go_router.dart';
 
 class SignUpScreen extends StatefulWidget {
-  const SignUpScreen({super.key});
+  final Function() onClickedSignIn;
+
+  const SignUpScreen({
+    Key? key,
+    required this.onClickedSignIn,
+  }) : super(key: key);
+
   @override
   SignUpScreenState createState() => new SignUpScreenState();
 }
 
 class SignUpScreenState extends State<SignUpScreen> {
-  String _login = '';
-  String _loginS = '';
-  String _email = '';
-  String _emailS = '';
-  String _password1 = '';
-  String _password1S = '';
-  String _password2 = '';
-  String _password2S = '';
+  final emailController = TextEditingController();
+  final passwordController = TextEditingController();
+
+  @override
+  void dispose() {
+    emailController.dispose();
+    passwordController.dispose();
+
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
     // TODO: implement build
@@ -31,7 +42,7 @@ class SignUpScreenState extends State<SignUpScreen> {
             Icons.arrow_back_sharp,
             color: Colors.white,
           ),
-          onPressed: () => context.go("/"),
+          onPressed: () => Navigator.pushNamed(context, '/auth'),
         ),
       ),
       body: SingleChildScrollView(
@@ -55,79 +66,70 @@ class SignUpScreenState extends State<SignUpScreen> {
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: <Widget>[
                     TextField(
-                      decoration: InputDecoration(
-                        hintText: 'Your login',
-                      ),
-                      onChanged: (value) {
-                        setState(() {
-                          _login = value;
-                        });
-                      },
-                      onSubmitted: (value) {
-                        setState(() {
-                          _loginS = value;
-                        });
-                      },
-                    ),
-                    TextField(
+                      controller: emailController,
+                      textInputAction: TextInputAction.next,
                       keyboardType: TextInputType.emailAddress,
                       decoration: InputDecoration(
                         hintText: 'Your email',
                       ),
-                      onChanged: (value) {
-                        setState(() {
-                          _email = value;
-                        });
-                      },
-                      onSubmitted: (value) {
-                        setState(() {
-                          _emailS = value;
-                        });
-                      },
                     ),
                     TextField(
+                      controller: passwordController,
+                      textInputAction: TextInputAction.next,
                       obscureText: true,
                       decoration: InputDecoration(
                         hintText: 'Your password',
                       ),
-                      onChanged: (value) {
-                        setState(() {
-                          _password1 = value;
-                        });
-                      },
-                      onSubmitted: (value) {
-                        setState(() {
-                          _password1S = value;
-                        });
-                      },
-                    ),
-                    TextField(
-                      obscureText: true,
-                      decoration: InputDecoration(
-                        hintText: 'Confirm your password',
-                      ),
-                      onChanged: (value) {
-                        setState(() {
-                          _password2 = value;
-                        });
-                      },
-                      onSubmitted: (value) {
-                        setState(() {
-                          _password2S = value;
-                        });
-                      },
                     ),
                     Padding(padding: EdgeInsets.only(bottom: 40)),
                   ],
                 ),
               ),
-              IconButton(
-                  onPressed: () => context.go("/welcome"),
-                  icon: Icon(Icons.skip_next_sharp))
+              ElevatedButton.icon(
+                style:
+                    ElevatedButton.styleFrom(minimumSize: Size.fromHeight(50)),
+                icon: Icon(Icons.lock_open, size: 32),
+                label: Text(
+                  'Sign Up',
+                  style: TextStyle(fontSize: 24),
+                ),
+                onPressed: signUp,
+              ),
+              SizedBox(height: 20),
+              RichText(
+                  text: TextSpan(
+                      style: TextStyle(color: Colors.black, fontSize: 12),
+                      text: 'Already have an account?   ',
+                      children: [
+                    TextSpan(
+                        recognizer: TapGestureRecognizer()
+                          ..onTap = widget.onClickedSignIn,
+                        text: 'Log In',
+                        style: TextStyle(
+                          decoration: TextDecoration.underline,
+                        ))
+                  ]))
             ],
           ),
         ),
       ),
     );
+  }
+
+  Future signUp() async {
+    showDialog(
+        context: context,
+        barrierDismissible: false,
+        builder: (context) => Center(child: CircularProgressIndicator()));
+    try {
+      await FirebaseAuth.instance.createUserWithEmailAndPassword(
+        email: emailController.text.trim(),
+        password: passwordController.text.trim(),
+      );
+    } on FirebaseAuthException catch (e) {
+      print(e);
+    }
+
+    navigatorKey.currentState!.popUntil((route) => route.isFirst);
   }
 }
