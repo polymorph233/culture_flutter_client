@@ -29,6 +29,33 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
 
     final vm = Provider.of<MainListViewModel>(context);
     final carousel = FestivalCarousel(festivals: vm.randomFestivals(carouselCount));
+    
+    final list = OutlinedButton(onPressed: () => context.go("/list"),
+      child: const Center(child: Text('Festivals')));
+    final map = OutlinedButton(onPressed: () => context.go("/map"),
+      child: const Center(child: Text('Map')));
+    final fav = OutlinedButton(onPressed: () => context.go("/fav"),
+      child: const Center(child: Text('My Favorites')));
+    final config = OutlinedButton(onPressed: () {  }, child: const Center(child: Text('Settings')));
+    
+    final portrait = [[list, map], [fav, config]];
+
+    const portraitMargin = EdgeInsets.all(20);
+    const portraitConstraints = BoxConstraints(
+      maxWidth: 128,
+      maxHeight: 32,
+    );
+
+    final landscape = [list, map, fav, config];
+
+    const landscapeMargin = EdgeInsets.only(left: 80, top: 40, right: 80, bottom: 40);
+    const landscapeConstraints = BoxConstraints(
+      maxWidth: 128,
+      maxHeight: 32,
+    );
+    
+    final isLandscape = MediaQuery.of(context).size.width > MediaQuery.of(context).size.height;
+    
     return Scaffold(
         appBar: AppBar(
             title: const Text("Welcome to Festival Culture")
@@ -37,41 +64,35 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
             padding: const EdgeInsets.all(10),
             width: MediaQuery.of(context).size.width,
             height: MediaQuery.of(context).size.height,
-            child: Column(children: <Widget>[
-              Expanded(child: carousel.carouselSlider),
-              Expanded(child: Column(
-                children: [
-                  Row(children: [
-                    Expanded(child: TextButton(onPressed: () => context.go("/list"),
-                    child: const SizedBox(
-                      width: 300,
-                      height: 100,
-                      child: Center(child: Text('Festivals'))
-                    ))),
-                    Expanded(child: TextButton(onPressed: () => context.go("/map"),
-                    child: const SizedBox(
-                      width: 300,
-                      height: 100,
-                      child: Center(child: Text('Map')),
-                    ))),
-                  ]),
-                  Row(children: [
-                    Expanded(child: TextButton(onPressed: () => context.go("/fav"),
-                    child: const SizedBox(
-                      width: 300,
-                      height: 100,
-                      child: Center(child: Text('My Favorites')),
-                    ))),
-                    Expanded(child: TextButton(onPressed: () {  },
-                    child: const SizedBox(
-                      width: 300,
-                      height: 100,
-                      child: Center(child: Text('Settings')),
-                    ))),
-                  ])
-                ],
-              ))
-            ])
+            child: 
+              isLandscape ?
+                Row(children: <Widget>[
+                  Expanded(child: carousel),
+                  Expanded(child: Column(children: landscape.map((child) =>
+                    Expanded(child: Container(
+                      margin: landscapeMargin,
+                      child: ConstrainedBox(
+                        constraints: landscapeConstraints,
+                        child: child
+                      ),
+                    )
+                  )).toList()))
+                ])
+              : Column(children: <Widget>[
+                Expanded(child: carousel),
+                Expanded(child: Column(
+                  children: portrait.map((row) =>
+                    Row(children: row.map((child) =>
+                        Expanded(child: Container(
+                          margin: portraitMargin,
+                          child: ConstrainedBox(
+                              constraints: portraitConstraints,
+                              child: child
+                          ),
+                        ))
+                    ).toList())
+                  ).toList()))
+              ])
         )
     );
   }
