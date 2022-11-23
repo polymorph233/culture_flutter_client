@@ -1,13 +1,46 @@
 import 'package:culture_flutter_client/models/comment.dart';
 import 'package:culture_flutter_client/models/festival.dart';
+import 'package:osm_nominatim/osm_nominatim.dart';
 
 import '../view_models/festival_view_model.dart';
 
+class FestivalData {
+  final String name;
+  final TerritorialSize? territorialSize;
+  final String principalRegion;
+  final String principalDepartment;
+  final String principalCommune;
+  final String principalPeriod;
+  final String? officialSite;
+  final int? zipCode;
+  final int inseeCode;
+  final int? streetCode;
+  final String? streetType;
+  final String? streetName;
+  final String? addressComplement;
+  // And other fields...
+
+  FestivalData({required this.name, this.territorialSize, required this.principalRegion, required this.principalDepartment, required this.principalCommune, required this.principalPeriod, this.officialSite, this.zipCode, required this.inseeCode, this.streetCode, this.streetType, this.streetName, this.addressComplement,});
+
+  Future<Festival> toFestival() async {
+    List<Place> place = [];
+    if (streetName != null) {
+      final searchQuery = "${addressComplement ?? ""} ${streetCode?.toString() ?? ""} ${streetType ?? ""} $streetName";
+      place = await Nominatim.searchByName(street: searchQuery, city: principalCommune, county: principalDepartment, state: principalRegion, country: "France", postalCode: zipCode?.toString() ?? "", limit: 1);
+    }
+    return Festival(
+        name: name, principalRegion: principalRegion, territorialSize: territorialSize, principalDepartment: principalDepartment, principalCommune: principalCommune, principalPeriod: principalPeriod, officialSite: this.officialSite, zipCode: this.zipCode, inseeCode: inseeCode,
+        place: place.isEmpty ? null : place.first
+    );
+  }
+}
+
 class DummyService {
-  static List<Festival> queue = <Festival>[
-    Festival(name: "Alphapodis", territorialSize: TerritorialSize.departmental, principalRegion: "Normandie", principalDepartment: "Orne", principalCommune: "Alençon", principalPeriod: "Avant-saison (1er janvier - 20 juin)", officialSite: "www.alphapodis.fr", zipCode: 61000, inseeCode: 61001),
-    Festival(name: "World festival Ambert", principalRegion: "Auvergne-Rhône-Alpes", principalDepartment: "Puy-de-Dôme", principalCommune: "Ambert", principalPeriod: "Saison (21 juin - 5 septembre)", officialSite: "https://festival-ambert.fr/", zipCode: 63600, inseeCode: 63003),
-    Festival(name: "Cuivres en Nord", principalRegion: "Hauts-de-France", principalDepartment: "Nord", principalCommune: "Anor", principalPeriod: "Après-saison (6 septembre - 31 décembre)", officialSite: "https://www.cuivresennord.com/", zipCode: 59186, inseeCode: 59012),
+  static List<FestivalData> queue = <FestivalData>[
+    FestivalData(name: "Alphapodis", territorialSize: TerritorialSize.departmental, principalRegion: "Normandie", principalDepartment: "Orne", principalCommune: "Alençon", principalPeriod: "Avant-saison (1er janvier - 20 juin)", officialSite: "www.alphapodis.fr", zipCode: 61000, inseeCode: 61001),
+    FestivalData(name: "World festival Ambert", principalRegion: "Auvergne-Rhône-Alpes", principalDepartment: "Puy-de-Dôme", principalCommune: "Ambert", principalPeriod: "Saison (21 juin - 5 septembre)", officialSite: "https://festival-ambert.fr/", zipCode: 63600, inseeCode: 63003),
+    FestivalData(name: "Cuivres en Nord", principalRegion: "Hauts-de-France", principalDepartment: "Nord", principalCommune: "Anor", principalPeriod: "Après-saison (6 septembre - 31 décembre)", officialSite: "https://www.cuivresennord.com/", zipCode: 59186, inseeCode: 59012),
+    FestivalData(name: "Autres Mesures", principalRegion: "Bretagne", principalDepartment: "Ille-et-Vilaine", principalCommune: "Rennes", principalPeriod: "Avant-saison (1er janvier - 20 juin)", officialSite: "https://autresmesures.wixsite.com", zipCode: 35000, inseeCode: 35238, streetName: "Place de la gare"),
   ];
   
   static Map<int, List<Comment>> comments = {
@@ -23,7 +56,7 @@ class DummyService {
   };
 
   static Future<List<Festival>> fetch() async {
-    return queue;
+     return await Future.wait(queue.map((e) async => await e.toFestival()));
   }
 
   static Future<List<Comment>> commentsOf(int index) async {

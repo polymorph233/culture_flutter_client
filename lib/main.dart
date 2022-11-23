@@ -1,5 +1,6 @@
 import 'package:culture_flutter_client/screens/favorites_screen.dart';
 import 'package:culture_flutter_client/screens/festival_list_screen.dart';
+import 'package:culture_flutter_client/screens/map_screen.dart';
 import 'package:culture_flutter_client/screens/welcome_screen.dart';
 import 'package:culture_flutter_client/view_models/main_list_view_model.dart';
 import 'package:flutter/material.dart';
@@ -25,6 +26,10 @@ final _router = GoRouter(
     GoRoute(
       path: "/fav",
       builder: (context, state) => const FavoriteFestivalsEntry(),
+    ),
+    GoRoute(
+      path: "/map",
+      builder: (context, state) => const MapListEntry(),
     ),
     /* TODO GoRoute to comment list
      * */

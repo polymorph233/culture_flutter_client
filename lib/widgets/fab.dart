@@ -35,7 +35,7 @@ class NavigationFabState extends State<NavigationFab> {
       PageType.festivalMap: FloatingActionButton.small(
         heroTag: "mapBtn",
         child: const Icon(Icons.map),
-        onPressed: () {},
+        onPressed: () => context.go("/map"),
       ),
       PageType.favorites: FloatingActionButton.small(
         heroTag: "favBtn",

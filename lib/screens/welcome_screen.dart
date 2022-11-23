@@ -48,7 +48,7 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
                       height: 100,
                       child: Center(child: Text('Festivals'))
                     ))),
-                    Expanded(child: TextButton(onPressed: () {  },
+                    Expanded(child: TextButton(onPressed: () => context.go("/map"),
                     child: const SizedBox(
                       width: 300,
                       height: 100,
@@ -56,7 +56,7 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
                     ))),
                   ]),
                   Row(children: [
-                    Expanded(child: TextButton(onPressed: () {  },
+                    Expanded(child: TextButton(onPressed: () => context.go("/fav"),
                     child: const SizedBox(
                       width: 300,
                       height: 100,
