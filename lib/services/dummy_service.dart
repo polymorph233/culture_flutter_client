@@ -1,5 +1,7 @@
 import 'package:culture_flutter_client/models/comment.dart';
 import 'package:culture_flutter_client/models/festival.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:osm_nominatim/osm_nominatim.dart';
 
 import '../view_models/festival_view_model.dart';
@@ -55,6 +57,35 @@ class DummyService {
     ]
   };
 
+  static final Set<Suggestion> _suggestions = {};
+
+  static Set<Suggestion> suggests() {
+    if (_suggestions.isNotEmpty) {
+      return _suggestions;
+    } else {
+      final names = queue.map((e) =>
+          Suggestion(icon: Icons.festival_outlined, content: e.name)).toSet();
+      final regions = queue.map((e) =>
+          Suggestion(icon: Icons.map_outlined, content: e.principalRegion))
+          .toSet();
+      final departments = queue.map((e) =>
+          Suggestion(icon: Icons.map_rounded, content: e.principalDepartment))
+          .toSet();
+      final communs = queue.map((e) =>
+          Suggestion(icon: Icons.location_city, content: e.principalCommune))
+          .toSet();
+      final periods = queue.map((e) =>
+          Suggestion(icon: Icons.date_range, content: e.principalPeriod))
+          .toSet();
+      _suggestions.addAll(names);
+      _suggestions.addAll(regions);
+      _suggestions.addAll(departments);
+      _suggestions.addAll(communs);
+      _suggestions.addAll(periods);
+      return _suggestions;
+    }
+  }
+
   static Future<List<Festival>> fetch() async {
      return await Future.wait(queue.map((e) async => await e.toFestival()));
   }
@@ -68,4 +99,11 @@ class DummyService {
   void setFavorites(List<FestivalViewModel> favorites) {
     this.favorites = favorites;
   }
+}
+
+class Suggestion {
+  final IconData icon;
+  final String content;
+
+  Suggestion({required this.icon, required this.content});
 }

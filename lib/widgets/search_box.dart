@@ -1,3 +1,4 @@
+import 'package:culture_flutter_client/services/dummy_service.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 
@@ -24,31 +25,32 @@ class _SearchBoxState extends State<SearchBox> {
             // TODO: Add validator
             child: Padding(
               padding: const EdgeInsets.all(8.0),
-              child: ChipsInput<String>(
+              child: ChipsInput<Suggestion>(
                 decoration: InputDecoration(prefixIcon: Icon(Icons.search), hintText: 'keyword search'),
                 findSuggestions: _findSuggestions,
-                onChanged: _onChanged,
-                chipBuilder: (BuildContext context, ChipsInputState<String> state, String keyword) {
+                onChanged: (values) => _onChanged(values.map((e) => e.content).toList()),
+                chipBuilder: (BuildContext context, ChipsInputState<Suggestion> state, Suggestion suggest) {
                   return InputChip(
-                    key: ObjectKey(keyword),
-                    label: Text(keyword),
+                    key: ObjectKey(suggest),
+                    label:
+                      FittedBox(child: Row(children: [Icon(suggest.icon), Text(suggest.content)])),
                     // avatar: CircleAvatar(
                     //   backgroundImage: NetworkImage(keyword),
                     // ),
-                    onDeleted: () => state.deleteChip(keyword),
-                    onSelected: (_) => _onChipTapped(keyword),
+                    onDeleted: () => state.deleteChip(suggest),
+                    onSelected: (_) => _onChipTapped(suggest.content),
                     materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
                   );
                 },
-                suggestionBuilder: (BuildContext context, ChipsInputState<String> state, String keyword) {
+                suggestionBuilder: (BuildContext context, ChipsInputState<Suggestion> state, Suggestion suggest) {
                   return ListTile(
-                    key: ObjectKey(keyword),
+                    key: ObjectKey(suggest),
                     // leading: CircleAvatar(
                     //   backgroundImage: NetworkImage(keyword.imageUrl),
                     // ),
-                    title: Text(keyword),
+                    title: Row(children: [Icon(suggest.icon), Text(suggest.content)]),
                     // subtitle: Text(keyword.email),
-                    onTap: () => state.selectSuggestion(keyword),
+                    onTap: () => state.selectSuggestion(suggest),
                   );
                 },
               ),
@@ -67,18 +69,16 @@ class _SearchBoxState extends State<SearchBox> {
     print('onChanged $data');
   }
 
-  Future<List<String>> _findSuggestions(String query) async {
+  Future<List<Suggestion>> _findSuggestions(String query) async {
     if (query.isNotEmpty) {
-      final results = mockResults.where((keyword) {
-        return keyword.contains(query)  /* || keyword.contains(query) */;
+      final results = mockResults.where((suggest) {
+        return suggest.content.contains(query)  /* || keyword.contains(query) */;
       }).toList(growable: false);
-      return [query] + results;
+      return [Suggestion(icon: Icons.text_snippet_outlined, content: query)] + results;
     } else {
       return [];
     }
   }
 
-  List<String> get mockResults => [
-    "Alphapodis", "World festival Ambert", "Cuivres en Nord"
-  ];
+  Set<Suggestion> get mockResults => DummyService.suggests();
 }
