@@ -18,7 +18,6 @@ class CommentList extends StatelessWidget {
       itemCount: comments.length,
       controller: scrollController,
       itemBuilder: (context, index) {
-
         final item = comments[index];
         return CommentWidget(item: item);
       });
@@ -30,7 +29,7 @@ class CommentWidget extends StatelessWidget {
 
   const CommentWidget({super.key, required this.item});
 
-  Widget get _star {
+  List<Widget> get _star {
     int count = 0;
 
     switch (item.comment.star) {
@@ -41,16 +40,10 @@ class CommentWidget extends StatelessWidget {
       case Star.star5: count = 5; break;
     }
 
-    const icon = Icon(Icons.star);
+    const icon = Icon(Icons.star, size: 16,);
 
-    return ListView.builder(
-      itemCount: count,
-      itemBuilder: (BuildContext _, int index)
-        {
-          return Column(
-            children: const <Widget>[icon]
-          );
-        });
+    return
+      List.filled(count, icon);
   }
 
   Widget get _title {
@@ -70,7 +63,10 @@ class CommentWidget extends StatelessWidget {
               ListTile(
                 leading: const Icon(Icons.comment),
                 title: _title,
-                subtitle: _star,
+                subtitle: Column(
+
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [Text("author: ${item.comment.author}", textAlign: TextAlign.left,), Row(children: _star)]),
               ),
               Row(
                 mainAxisAlignment: MainAxisAlignment.end,

@@ -1,6 +1,7 @@
 
 import 'package:culture_flutter_client/models/festival.dart';
 import 'package:culture_flutter_client/services/dummy_service.dart';
+import 'package:culture_flutter_client/view_models/comment_view_model.dart';
 import 'package:culture_flutter_client/view_models/festival_detail_view_model.dart';
 import 'package:culture_flutter_client/view_models/festival_view_model.dart';
 import 'package:culture_flutter_client/widgets/comment_list.dart';
@@ -12,16 +13,30 @@ import 'package:provider/provider.dart';
 import '../packages/text_cursor/text_cursor.dart';
 import '../view_models/main_list_view_model.dart';
 
-class FestivalDetailScreen extends StatelessWidget {
-  
+class FestivalDetailScreen extends StatefulWidget {
+
   final FestivalDetailViewModel viewModel;
+
   const FestivalDetailScreen({super.key, required this.viewModel});
 
   @override
+  State<StatefulWidget> createState() => FestivalDetailScreenState();
+}
+
+class FestivalDetailScreenState extends State<FestivalDetailScreen> {
+
+  Future<List<CommentViewModel>> loadComments() async {
+    final cmts = await DummyService.commentsOf(widget.viewModel.id);
+    return cmts.map((e) => CommentViewModel(e)).toList();
+  }
+
+  @override
+  void initState() {
+    super.initState();
+  }
+
+  @override
   Widget build(BuildContext context) {
-    const helperStyle = TextStyle(fontSize: 12, fontWeight: FontWeight.w200);
-    const keyStyle = TextStyle(fontSize: 16, fontWeight: FontWeight.bold);
-    const mainStyle = TextStyle(fontSize: 16, fontWeight: FontWeight.normal);
 
     final table = DataTable(
       columns: const <DataColumn>[
@@ -46,49 +61,49 @@ class FestivalDetailScreen extends StatelessWidget {
         DataRow(
           cells: <DataCell>[
             const DataCell(Text('Period')),
-            DataCell(Text(viewModel.festival.principalPeriod)),
+            DataCell(Text(widget.viewModel.festival.principalPeriod)),
           ],
         ),
         DataRow(
           cells: <DataCell>[
             const DataCell(Text('Size')),
-            DataCell(Text(viewModel.festival.territorialSize == null ? "unknown" : festivalToString(viewModel.festival.territorialSize!))),
+            DataCell(Text(widget.viewModel.festival.territorialSize == null ? "unknown" : festivalToString(widget.viewModel.festival.territorialSize!))),
           ],
         ),
         DataRow(
           cells: <DataCell>[
             const DataCell(Text('City')),
-            DataCell(Text(viewModel.festival.principalCommune)),
+            DataCell(Text(widget.viewModel.festival.principalCommune)),
           ],
         ),
         DataRow(
           cells: <DataCell>[
             const DataCell(Text('County')),
-            DataCell(Text(viewModel.festival.principalDepartment)),
+            DataCell(Text(widget.viewModel.festival.principalDepartment)),
           ],
         ),
         DataRow(
           cells: <DataCell>[
             const DataCell(Text('State')),
-            DataCell(Text(viewModel.festival.principalRegion)),
+            DataCell(Text(widget.viewModel.festival.principalRegion)),
           ],
         ),
         DataRow(
           cells: <DataCell>[
             const DataCell(Text('zipCode')),
-            DataCell(Text(viewModel.festival.zipCode?.toString() ?? "unknown")),
+            DataCell(Text(widget.viewModel.festival.zipCode?.toString() ?? "unknown")),
           ],
         ),
         DataRow(
           cells: <DataCell>[
             const DataCell(Text('Website')),
-            DataCell(Text(viewModel.festival.officialSite ?? "unknown")),
+            DataCell(Text(widget.viewModel.festival.officialSite ?? "unknown")),
           ],
         ),
         DataRow(
           cells: <DataCell>[
             const DataCell(Text('State')),
-            DataCell(Text(viewModel.festival.principalRegion)),
+            DataCell(Text(widget.viewModel.festival.principalRegion)),
           ],
         ),
       ],
@@ -96,7 +111,7 @@ class FestivalDetailScreen extends StatelessWidget {
 
     return Scaffold(
       appBar: AppBar(
-          title: Text(viewModel.festival.name)
+          title: Text(widget.viewModel.festival.name)
       ),
       body: Container(
         padding: const EdgeInsets.all(10),
@@ -107,11 +122,20 @@ class FestivalDetailScreen extends StatelessWidget {
             child:
               table
           ),
-          Expanded(
-            child: CommentList(comments: viewModel.comments, scrollController: ScrollController())),
-        ]),
+          FutureBuilder<List<CommentViewModel>>(
+            future: loadComments(),
+            builder: (BuildContext context, AsyncSnapshot<List<CommentViewModel>> commentsFuture) {
+              if (commentsFuture.hasData && commentsFuture.data != null) {
+                return Expanded(
+                    child: CommentList(comments: commentsFuture.data!, scrollController: ScrollController()));
+              } else {
+                return const Text("Comment is loading, please wait...");
+              }
+            },
+          ),
+        ]
       )
-    );
+    ));
   }
 }
 

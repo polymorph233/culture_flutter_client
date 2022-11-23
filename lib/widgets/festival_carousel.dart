@@ -69,10 +69,11 @@ class FestivalCarouselState extends State<FestivalCarousel> {
                   borderRadius: const BorderRadius.all(Radius.circular(5.0)),
                   child: Stack(
                     children: <Widget>[
-                      FittedBox(
-                        fit: BoxFit.fill,
-                        child: randomImage(item.domain),
-                      ),
+                      SizedBox.expand(
+                        child: FittedBox(
+                          fit: BoxFit.fill,
+                          child: randomImage(item.domain),
+                      )),
                       Positioned(
                         bottom: 0.0,
                         left: 0.0,
