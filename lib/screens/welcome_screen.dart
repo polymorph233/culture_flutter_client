@@ -1,7 +1,9 @@
-
-import 'package:culture_flutter_client/view_models/festival_list_view_model.dart';
+import 'package:culture_flutter_client/view_models/main_list_view_model.dart';
+import 'package:culture_flutter_client/widgets/fab.dart';
 import 'package:culture_flutter_client/widgets/festival_carousel.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_expandable_fab/flutter_expandable_fab.dart';
+import 'package:get_it/get_it.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 
@@ -18,14 +20,14 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
   @override
   void initState() {
     super.initState();
-    Provider.of<FestivalListViewModel>(context, listen: false).update();
+    Provider.of<MainListViewModel>(context, listen: false).update();
   }
 
   @override
   Widget build(BuildContext context) {
     const int carouselCount = 4;
 
-    final vm = Provider.of<FestivalListViewModel>(context);
+    final vm = Provider.of<MainListViewModel>(context);
     final carousel = FestivalCarousel(festivals: vm.randomFestivals(carouselCount));
     return Scaffold(
         appBar: AppBar(
@@ -46,7 +48,7 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
                       height: 100,
                       child: Center(child: Text('Festivals'))
                     ))),
-                    Expanded(child: TextButton(onPressed: () {  },
+                    Expanded(child: TextButton(onPressed: () => context.go("/map"),
                     child: const SizedBox(
                       width: 300,
                       height: 100,
@@ -54,7 +56,7 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
                     ))),
                   ]),
                   Row(children: [
-                    Expanded(child: TextButton(onPressed: () {  },
+                    Expanded(child: TextButton(onPressed: () => context.go("/fav"),
                     child: const SizedBox(
                       width: 300,
                       height: 100,
@@ -95,20 +97,16 @@ class WelcomeScreenEntry extends StatefulWidget {
 
 class _WelcomeScreenEntryState extends State<WelcomeScreenEntry> {
 
-  FestivalListViewModel festivalListViewModel = FestivalListViewModel();
-
   @override
   Widget build(BuildContext context) {
+    final vm = Provider.of<MainListViewModel>(context);
     return Scaffold(
       body: ChangeNotifierProvider(
-        create: (context) => festivalListViewModel,
+        create: (context) => vm,
         child: const WelcomeScreen(),
       ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () => {},
-        tooltip: 'TODO',
-        child: const Icon(Icons.check),
-      ), // This trailing comma makes auto-formatting nicer for build methods.
+      floatingActionButtonLocation: ExpandableFab.location,
+      floatingActionButton: const NavigationFab(currentPageType: PageType.welcome)
     );
   }
 }

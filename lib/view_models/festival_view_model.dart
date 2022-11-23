@@ -1,11 +1,15 @@
 // ViewModel
 
+import 'package:osm_nominatim/osm_nominatim.dart';
+
 import '../models/festival.dart';
 
 class FestivalViewModel {
   final Festival model;
 
-  FestivalViewModel({required this.model});
+  final int id;
+
+  FestivalViewModel({required this.id, required this.model});
 
   String get name {
     return model.name;
@@ -41,5 +45,9 @@ class FestivalViewModel {
 
   int get inseeCode {
     return model.inseeCode;
+  }
+
+  Place? get place {
+    return model.place;
   }
 }
