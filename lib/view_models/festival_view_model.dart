@@ -7,7 +7,9 @@ import '../models/festival.dart';
 class FestivalViewModel {
   final Festival model;
 
-  FestivalViewModel({required this.model});
+  final int id;
+
+  FestivalViewModel({required this.id, required this.model});
 
   String get name {
     return model.name;

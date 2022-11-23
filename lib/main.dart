@@ -1,4 +1,5 @@
 import 'package:culture_flutter_client/screens/favorites_screen.dart';
+import 'package:culture_flutter_client/screens/festival_detail_screen.dart';
 import 'package:culture_flutter_client/screens/festival_list_screen.dart';
 import 'package:culture_flutter_client/screens/map_screen.dart';
 import 'package:culture_flutter_client/screens/welcome_screen.dart';
@@ -31,6 +32,14 @@ final _router = GoRouter(
       path: "/map",
       builder: (context, state) => const MapListEntry(),
     ),
+    GoRoute(
+      path: "/fest/:id",
+      name: "festival",
+      builder: (context, state) {
+        int id = int.parse(state.params['id']!);
+        return FestivalDetailEntry(id: id);
+      }
+    )
     /* TODO GoRoute to comment list
      * */
   ],

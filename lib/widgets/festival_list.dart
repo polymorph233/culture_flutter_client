@@ -1,5 +1,5 @@
 import 'package:culture_flutter_client/view_models/festival_view_model.dart';
-import 'package:flutter/cupertino.dart';
+import 'package:flutter/widgets.dart';
 import 'package:flutter/material.dart';
 
 class FestivalList extends StatelessWidget {
@@ -12,8 +12,10 @@ class FestivalList extends StatelessWidget {
 
   final ValueChanged<FestivalViewModel>? onDelete;
 
+  final ValueChanged<int> onClick;
+
   const FestivalList({super.key, required this.festivals, required this.scrollController,
-    this.onAdd, this.onDelete});
+    this.onAdd, this.onDelete, required this.onClick});
 
   @override
   Widget build(BuildContext context) {
@@ -24,11 +26,7 @@ class FestivalList extends StatelessWidget {
 
           final item = festivals[index];
 
-          if (this.onAdd != null || this.onDelete != null) {
-            return FestivalWidget(festival: item, onAdd: onAdd, onDelete: onDelete,);
-          } else {
-            return FestivalWidget(festival: item);
-          }
+          return FestivalWidget(festival: item, onAdd: onAdd, onDelete: onDelete, onClick: onClick);
         });
   }
 }
@@ -40,19 +38,24 @@ class FestivalWidget extends StatelessWidget {
 
   final ValueChanged<FestivalViewModel>? onDelete;
 
-  const FestivalWidget({super.key, required this.festival, this.onAdd, this.onDelete});
+  final ValueChanged<int> onClick;
+
+  const FestivalWidget({super.key, required this.festival, this.onAdd, this.onDelete, required this.onClick});
 
   @override
   Widget build(BuildContext context) {
-    Widget card = Card(
-        margin: const EdgeInsets.all(10),
-        child: ListTile(
-          leading: CircleAvatar(
-            child: Text(festival.name.substring(0, 2)),
-          ),
-          title: Text(festival.name),
-          subtitle: Text(festival.principalPeriod),
-        ));
+    Widget card = InkWell(
+      onTap: () => onClick(festival.id),
+      child: Card(
+      margin: const EdgeInsets.all(10),
+      child: ListTile(
+        leading: CircleAvatar(
+          child: Text(festival.name.substring(0, 2)),
+        ),
+        title: Text(festival.name),
+        subtitle: Text(festival.principalPeriod),
+      ),
+    ));
 
     List<Widget> widgets = [Expanded(child: card)];
 

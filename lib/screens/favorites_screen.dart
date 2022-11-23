@@ -5,6 +5,7 @@ import 'package:culture_flutter_client/widgets/fab.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_expandable_fab/flutter_expandable_fab.dart';
 import 'package:get_it/get_it.dart';
+import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 
 import '../packages/text_cursor/text_cursor.dart';
@@ -95,6 +96,8 @@ class _FavoriteFestivalListScreenState extends State<FavoriteFestivalListScreen>
                 child: FestivalList(
                   festivals: favorites, scrollController: ScrollController(),
                   onDelete: (fest) => remove(fest),
+                  onClick: (id) =>
+                    context.pushNamed('festival', params: {"id": id.toString()})
                 ))
             ])
         )

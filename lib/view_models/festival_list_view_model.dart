@@ -1,5 +1,6 @@
 import 'package:culture_flutter_client/services/dummy_service.dart';
-import 'package:flutter/cupertino.dart';
+import 'package:collection/collection.dart';
+import 'package:flutter/widgets.dart';
 
 import 'festival_view_model.dart';
 
@@ -10,7 +11,7 @@ class FestivalListViewModel extends ChangeNotifier {
   Future<void> update() async {
     // TODO: Update festival list from remote
     final results = await DummyService.fetch();
-    festivals = results.map((e) => FestivalViewModel(model: e)).toList();
+    festivals = results.mapIndexed((i, e) => FestivalViewModel(id: i, model: e)).toList();
     notifyListeners();
   }
 

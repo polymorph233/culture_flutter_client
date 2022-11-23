@@ -6,6 +6,7 @@ import 'package:culture_flutter_client/widgets/search_box.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_expandable_fab/flutter_expandable_fab.dart';
 import 'package:get_it/get_it.dart';
+import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 
 import '../packages/text_cursor/text_cursor.dart';
@@ -80,7 +81,10 @@ class _FestivalListScreenState extends State<FestivalListScreen> {
               ),
               Expanded(
                   child: FestivalList(
-                    festivals: festivals, scrollController: ScrollController(), onAdd: (fest) => vm.addFavorite(fest)))//we will create this further down
+                    festivals: festivals, scrollController: ScrollController(),
+                    onAdd: (fest) => vm.addFavorite(fest),
+                    onClick: (id) =>
+                        context.pushNamed('festival', params: {"id": id.toString()})))//we will create this further down
             ])
         )
     );

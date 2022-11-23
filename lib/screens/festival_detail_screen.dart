@@ -1,5 +1,8 @@
 
+import 'package:culture_flutter_client/models/festival.dart';
+import 'package:culture_flutter_client/services/dummy_service.dart';
 import 'package:culture_flutter_client/view_models/festival_detail_view_model.dart';
+import 'package:culture_flutter_client/view_models/festival_view_model.dart';
 import 'package:culture_flutter_client/widgets/comment_list.dart';
 import 'package:culture_flutter_client/widgets/fab.dart';
 import 'package:flutter/material.dart';
@@ -7,57 +10,105 @@ import 'package:flutter_expandable_fab/flutter_expandable_fab.dart';
 import 'package:provider/provider.dart';
 
 import '../packages/text_cursor/text_cursor.dart';
+import '../view_models/main_list_view_model.dart';
 
 class FestivalDetailScreen extends StatelessWidget {
-  const FestivalDetailScreen({super.key});
+  
+  final FestivalDetailViewModel viewModel;
+  const FestivalDetailScreen({super.key, required this.viewModel});
 
   @override
   Widget build(BuildContext context) {
-    final vm = Provider.of<FestivalDetailViewModel>(context);
-
-    List<String> infoList = [
-      vm.festival.officialSite ?? "official site unavailable",
-      "zipcode: ${vm.festival.zipCode.toString()}",
-      "insee code: ${vm.festival.inseeCode}",
-    ];
-
     const helperStyle = TextStyle(fontSize: 12, fontWeight: FontWeight.w200);
     const keyStyle = TextStyle(fontSize: 16, fontWeight: FontWeight.bold);
     const mainStyle = TextStyle(fontSize: 16, fontWeight: FontWeight.normal);
 
+    final table = DataTable(
+      columns: const <DataColumn>[
+        DataColumn(
+          label: Expanded(
+            child: Text(
+              'Attribute',
+              style: TextStyle(color: Colors.transparent),
+            ),
+          ),
+        ),
+        DataColumn(
+          label: Expanded(
+            child: Text(
+              'Value',
+              style: TextStyle(color: Colors.transparent),
+            ),
+          ),
+        ),
+      ],
+      rows: <DataRow>[
+        DataRow(
+          cells: <DataCell>[
+            const DataCell(Text('Period')),
+            DataCell(Text(viewModel.festival.principalPeriod)),
+          ],
+        ),
+        DataRow(
+          cells: <DataCell>[
+            const DataCell(Text('Size')),
+            DataCell(Text(viewModel.festival.territorialSize == null ? "unknown" : festivalToString(viewModel.festival.territorialSize!))),
+          ],
+        ),
+        DataRow(
+          cells: <DataCell>[
+            const DataCell(Text('City')),
+            DataCell(Text(viewModel.festival.principalCommune)),
+          ],
+        ),
+        DataRow(
+          cells: <DataCell>[
+            const DataCell(Text('County')),
+            DataCell(Text(viewModel.festival.principalDepartment)),
+          ],
+        ),
+        DataRow(
+          cells: <DataCell>[
+            const DataCell(Text('State')),
+            DataCell(Text(viewModel.festival.principalRegion)),
+          ],
+        ),
+        DataRow(
+          cells: <DataCell>[
+            const DataCell(Text('zipCode')),
+            DataCell(Text(viewModel.festival.zipCode?.toString() ?? "unknown")),
+          ],
+        ),
+        DataRow(
+          cells: <DataCell>[
+            const DataCell(Text('Website')),
+            DataCell(Text(viewModel.festival.officialSite ?? "unknown")),
+          ],
+        ),
+        DataRow(
+          cells: <DataCell>[
+            const DataCell(Text('State')),
+            DataCell(Text(viewModel.festival.principalRegion)),
+          ],
+        ),
+      ],
+    );
+
     return Scaffold(
       appBar: AppBar(
-          title: Text(vm.festival.name)
+          title: Text(viewModel.festival.name)
       ),
       body: Container(
         padding: const EdgeInsets.all(10),
         width: MediaQuery.of(context).size.width,
         height: MediaQuery.of(context).size.height,
         child: Column(children: [
-          Container(
-            margin: const EdgeInsets.all(10),
+          Expanded(
             child:
-              Column(children: [
-                Title(color: Colors.black, child: Text(vm.festival.name)),
-                const Text("during period", style: helperStyle),
-                Text(vm.festival.principalPeriod, style: keyStyle),
-                const Text("in", style: helperStyle),
-                Text(vm.festival.principalCommune, style: keyStyle),
-                Text(vm.festival.principalDepartment, style: keyStyle),
-                Text(vm.festival.principalRegion, style: keyStyle),
-                const Spacer(),
-                ListView.builder(
-                    itemCount: infoList.length,
-                    controller: ScrollController(),
-                    itemBuilder: (context, index) {
-
-                      final item = infoList[index];
-                      return Text(item, style: mainStyle);
-                    }),
-              ])
+              table
           ),
           Expanded(
-              child: CommentList(comments: vm.comments, scrollController: ScrollController())),
+            child: CommentList(comments: viewModel.comments, scrollController: ScrollController())),
         ]),
       )
     );
@@ -66,11 +117,9 @@ class FestivalDetailScreen extends StatelessWidget {
 
 
 class FestivalDetailEntry extends StatefulWidget {
-  const FestivalDetailEntry({super.key, required this.festivalDetailViewModel});
-
-  final FestivalDetailViewModel festivalDetailViewModel;
-
-  String get title => festivalDetailViewModel.festival.name;
+  const FestivalDetailEntry({super.key, required this.id});
+  
+  final int id;
 
   @override
   State<FestivalDetailEntry> createState() => _FestivalDetailEntryState();
@@ -78,14 +127,19 @@ class FestivalDetailEntry extends StatefulWidget {
 
 class _FestivalDetailEntryState extends State<FestivalDetailEntry> {
 
-  FestivalDetailViewModel get festivalDetailViewModel => widget.festivalDetailViewModel;
-
   @override
   Widget build(BuildContext context) {
+    
+    final viewModel = Provider.of<MainListViewModel>(context);
+    
+    final festivalVM = viewModel.festivals[widget.id];
+
+    final detailedViewModel = FestivalDetailViewModel(widget.id, festivalVM);
+    
     return Scaffold(
       body: ChangeNotifierProvider(
-        create: (context) => festivalDetailViewModel,
-        child: const FestivalDetailScreen(),
+        create: (context) => detailedViewModel,
+        child: FestivalDetailScreen(viewModel: detailedViewModel),
       ),
       floatingActionButtonLocation: ExpandableFab.location,
       floatingActionButton: const NavigationFab(currentPageType: PageType.festivalDetail)
