@@ -2,10 +2,27 @@
 
 // Data structure from OpenData, to be replaced by the Firebase API facet
 
+import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:osm_nominatim/osm_nominatim.dart';
 
 enum TerritorialSize {
   communal, intercommunal, departmental, interdepartmental, regional, interregional, national, crossBorder
+}
+
+enum Domain {
+  visualNumericArts, cinema, literature, music, pluridiscipline, liveScene,
+}
+
+IconData categoryIcon(Domain domain) {
+  switch (domain) {
+    case Domain.visualNumericArts: return Icons.palette;
+    case Domain.cinema: return Icons.theaters;
+    case Domain.literature: return Icons.auto_stories;
+    case Domain.music: return Icons.music_note;
+    case Domain.pluridiscipline: return Icons.hub;
+    case Domain.liveScene: return Icons.theater_comedy;
+  }
 }
 
 String festivalToString(TerritorialSize ts) {
@@ -33,9 +50,10 @@ class Festival {
   final int? zipCode;
   final int inseeCode;
   final Place? place;
+  final Domain domain;
 
   // And other fields...
 
-  Festival({required this.name, this.territorialSize, required this.principalRegion, required this.principalDepartment, required this.principalCommune, required this.principalPeriod, this.officialSite, this.zipCode, required this.inseeCode, this.place});
+  Festival({required this.name, this.territorialSize, required this.principalRegion, required this.principalDepartment, required this.principalCommune, required this.principalPeriod, this.officialSite, this.zipCode, required this.inseeCode, this.place, required this.domain});
 
 }

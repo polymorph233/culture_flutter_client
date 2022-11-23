@@ -20,9 +20,10 @@ class FestivalData {
   final String? streetType;
   final String? streetName;
   final String? addressComplement;
+  final Domain domain;
   // And other fields...
 
-  FestivalData({required this.name, this.territorialSize, required this.principalRegion, required this.principalDepartment, required this.principalCommune, required this.principalPeriod, this.officialSite, this.zipCode, required this.inseeCode, this.streetCode, this.streetType, this.streetName, this.addressComplement,});
+  FestivalData({required this.name, this.territorialSize, required this.principalRegion, required this.principalDepartment, required this.principalCommune, required this.principalPeriod, this.officialSite, this.zipCode, required this.inseeCode, this.streetCode, this.streetType, this.streetName, this.addressComplement, required this.domain});
 
   Future<Festival> toFestival() async {
     List<Place> place = [];
@@ -32,17 +33,17 @@ class FestivalData {
     }
     return Festival(
         name: name, principalRegion: principalRegion, territorialSize: territorialSize, principalDepartment: principalDepartment, principalCommune: principalCommune, principalPeriod: principalPeriod, officialSite: this.officialSite, zipCode: this.zipCode, inseeCode: inseeCode,
-        place: place.isEmpty ? null : place.first
+        place: place.isEmpty ? null : place.first, domain: domain,
     );
   }
 }
 
 class DummyService {
   static List<FestivalData> queue = <FestivalData>[
-    FestivalData(name: "Alphapodis", territorialSize: TerritorialSize.departmental, principalRegion: "Normandie", principalDepartment: "Orne", principalCommune: "Alençon", principalPeriod: "Avant-saison (1er janvier - 20 juin)", officialSite: "www.alphapodis.fr", zipCode: 61000, inseeCode: 61001),
-    FestivalData(name: "World festival Ambert", principalRegion: "Auvergne-Rhône-Alpes", principalDepartment: "Puy-de-Dôme", principalCommune: "Ambert", principalPeriod: "Saison (21 juin - 5 septembre)", officialSite: "https://festival-ambert.fr/", zipCode: 63600, inseeCode: 63003),
-    FestivalData(name: "Cuivres en Nord", principalRegion: "Hauts-de-France", principalDepartment: "Nord", principalCommune: "Anor", principalPeriod: "Après-saison (6 septembre - 31 décembre)", officialSite: "https://www.cuivresennord.com/", zipCode: 59186, inseeCode: 59012),
-    FestivalData(name: "Autres Mesures", principalRegion: "Bretagne", principalDepartment: "Ille-et-Vilaine", principalCommune: "Rennes", principalPeriod: "Avant-saison (1er janvier - 20 juin)", officialSite: "https://autresmesures.wixsite.com", zipCode: 35000, inseeCode: 35238, streetName: "Place de la gare"),
+    FestivalData(name: "Alphapodis", territorialSize: TerritorialSize.departmental, principalRegion: "Normandie", principalDepartment: "Orne", principalCommune: "Alençon", principalPeriod: "Avant-saison (1er janvier - 20 juin)", officialSite: "www.alphapodis.fr", zipCode: 61000, inseeCode: 61001, domain: Domain.pluridiscipline),
+    FestivalData(name: "World festival Ambert", principalRegion: "Auvergne-Rhône-Alpes", principalDepartment: "Puy-de-Dôme", principalCommune: "Ambert", principalPeriod: "Saison (21 juin - 5 septembre)", officialSite: "https://festival-ambert.fr/", zipCode: 63600, inseeCode: 63003, domain: Domain.cinema),
+    FestivalData(name: "Cuivres en Nord", principalRegion: "Hauts-de-France", principalDepartment: "Nord", principalCommune: "Anor", principalPeriod: "Après-saison (6 septembre - 31 décembre)", officialSite: "https://www.cuivresennord.com/", zipCode: 59186, inseeCode: 59012, domain: Domain.visualNumericArts),
+    FestivalData(name: "Autres Mesures", principalRegion: "Bretagne", principalDepartment: "Ille-et-Vilaine", principalCommune: "Rennes", principalPeriod: "Avant-saison (1er janvier - 20 juin)", officialSite: "https://autresmesures.wixsite.com", zipCode: 35000, inseeCode: 35238, streetName: "Place de la gare", domain: Domain.music),
   ];
   
   static Map<int, List<Comment>> comments = {
@@ -82,9 +83,18 @@ class DummyService {
       _suggestions.addAll(departments);
       _suggestions.addAll(communes);
       _suggestions.addAll(periods);
+      _suggestions.addAll([
+        Suggestion(icon: Icons.music_note, type: SuggestionType.domain, present: "Music", content: "music"),
+        Suggestion(icon: Icons.theaters, type: SuggestionType.domain, present: "Cinema", content: "cinema"),
+        Suggestion(icon: Icons.auto_stories, type: SuggestionType.domain, present: "Literature", content: "literature"),
+        Suggestion(icon: Icons.theater_comedy, type: SuggestionType.domain, present: "Live Scene", content: "live scene"),
+        Suggestion(icon: Icons.palette, type: SuggestionType.domain, present: "Visual Numeric Arts", content: "visual numeric arts"),
+        Suggestion(icon: Icons.hub, type: SuggestionType.domain, present: "Pluridiscipline", content: "pluridiscipline"),
+      ]);
       return _suggestions;
     }
   }
+
 
   static Future<List<Festival>> fetch() async {
      return await Future.wait(queue.map((e) async => await e.toFestival()));
@@ -102,7 +112,7 @@ class DummyService {
 }
 
 enum SuggestionType {
-  rawName, festival, region, department, commune, period,
+  rawName, festival, region, department, commune, period, domain,
 }
 
 class Suggestion {

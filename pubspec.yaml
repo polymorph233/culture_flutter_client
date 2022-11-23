@@ -53,6 +53,7 @@ dependencies:
 
   latlong2: ^0.8.1
   flutter_map_marker_cluster: ^1.0.1
+  share_plus: ^6.3.0
 
 dev_dependencies:
   flutter_test:
@@ -80,6 +81,8 @@ flutter:
   # assets:
   #   - images/a_dot_burr.jpeg
   #   - images/a_dot_ham.jpeg
+  assets:
+    - assets/images/catalogs/
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware

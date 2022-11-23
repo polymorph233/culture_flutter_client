@@ -2,6 +2,8 @@ import 'package:culture_flutter_client/view_models/festival_view_model.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter/material.dart';
 
+import '../models/festival.dart';
+
 class FestivalList extends StatelessWidget {
 
   final List<FestivalViewModel> festivals;
@@ -45,7 +47,7 @@ class FestivalWidget extends StatelessWidget {
   final ValueChanged<int> onClick;
 
   const FestivalWidget({super.key, required this.festival, required this.isLiked, this.onAdd, this.onDelete, required this.onClick});
-
+  
   @override
   Widget build(BuildContext context) {
     Widget card = InkWell(
@@ -54,7 +56,7 @@ class FestivalWidget extends StatelessWidget {
       margin: const EdgeInsets.all(10),
       child: ListTile(
         leading: CircleAvatar(
-          child: Text(festival.name.substring(0, 2)),
+          child: Icon(categoryIcon(festival.domain)),
         ),
         title: Text(festival.name),
         subtitle: Text(festival.principalPeriod),

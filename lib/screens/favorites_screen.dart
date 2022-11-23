@@ -45,26 +45,8 @@ class _FavoriteFestivalListScreenState extends State<FavoriteFestivalListScreen>
     } else {
       setState(() {
         favorites = favorites.where((entry) =>
-            tags.any((tag) => getLabelBySuggestType(tag.type, entry).toLowerCase().contains(tag.content))).toList();
+            tags.any((tag) => FestivalViewModel.getLabelBySuggestType(tag.type, entry).toLowerCase().contains(tag.content))).toList();
       });
-    }
-  }
-
-
-  String getLabelBySuggestType(SuggestionType type, FestivalViewModel viewModel) {
-    switch (type) {
-      case SuggestionType.rawName:
-        return "${viewModel.name} ${viewModel.principalRegion} ${viewModel.principalCommune} ${viewModel.principalDepartment} ${viewModel.principalPeriod}";
-      case SuggestionType.festival:
-        return viewModel.name;
-      case SuggestionType.region:
-        return viewModel.principalRegion;
-      case SuggestionType.department:
-        return viewModel.principalDepartment;
-      case SuggestionType.commune:
-        return viewModel.principalCommune;
-      case SuggestionType.period:
-        return viewModel.principalPeriod;
     }
   }
 

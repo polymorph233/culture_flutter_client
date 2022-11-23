@@ -9,7 +9,13 @@ class FestivalDetailViewModel extends ChangeNotifier {
   final FestivalViewModel festival;
   List<CommentViewModel> comments = [];
 
-  FestivalDetailViewModel(this.id, this.festival,) {
-    DummyService.commentsOf(id).then((value) => comments = value.map((e) => CommentViewModel(e)).toList());
+  FestivalDetailViewModel(this.id, this.festival);
+
+  void fetchComments() {
+    DummyService.commentsOf(id).then((value) {
+        comments = value.map((e) => CommentViewModel(e)).toList();
+        notifyListeners();
+      }
+    );
   }
 }
