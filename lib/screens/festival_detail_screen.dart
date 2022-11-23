@@ -1,4 +1,6 @@
 
+import 'dart:math';
+
 import 'package:culture_flutter_client/models/festival.dart';
 import 'package:culture_flutter_client/services/dummy_service.dart';
 import 'package:culture_flutter_client/view_models/comment_view_model.dart';
@@ -8,7 +10,9 @@ import 'package:culture_flutter_client/widgets/comment_list.dart';
 import 'package:culture_flutter_client/widgets/fab.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_expandable_fab/flutter_expandable_fab.dart';
+import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
+import 'package:share_plus/share_plus.dart';
 
 import '../packages/text_cursor/text_cursor.dart';
 import '../view_models/main_list_view_model.dart';
@@ -159,14 +163,59 @@ class _FestivalDetailEntryState extends State<FestivalDetailEntry> {
     final festivalVM = viewModel.festivals[widget.id];
 
     final detailedViewModel = FestivalDetailViewModel(widget.id, festivalVM);
-    
+
+    final fabIcons = [
+      FloatingActionButton.small(
+        tooltip: "Share",
+        heroTag: "shareBtn",
+        child: const Icon(Icons.share),
+        onPressed: () async =>
+          await
+            Share.share("Here is my favorite culture festival:\n${festivalVM.name}, let's discuss on app: https://www.amazingfestivals.com/connect?invite=${generateRandomString(25)} .")
+      ),
+      FloatingActionButton.small(
+        tooltip: "Home",
+        heroTag: "welcomeBtn",
+        child: const Icon(Icons.home),
+        onPressed: () => context.go("/"),
+      ),
+      FloatingActionButton.small(
+        tooltip: "List",
+        heroTag: "listBtn",
+        child: const Icon(Icons.list),
+        onPressed: () => context.go("/list"),
+      ),
+      FloatingActionButton.small(
+        tooltip: "Map",
+        heroTag: "mapBtn",
+        child: const Icon(Icons.map),
+        onPressed: () => context.go("/map"),
+      ),
+      FloatingActionButton.small(
+        tooltip: "Favorites",
+        heroTag: "favBtn",
+        child: const Icon(Icons.favorite),
+        onPressed: () => context.go("/fav"),
+      ),
+    ];
+
     return Scaffold(
       body: ChangeNotifierProvider(
         create: (context) => detailedViewModel,
         child: FestivalDetailScreen(viewModel: detailedViewModel),
       ),
       floatingActionButtonLocation: ExpandableFab.location,
-      floatingActionButton: const NavigationFab(currentPageType: PageType.festivalDetail)
-    );
+      floatingActionButton: ExpandableFab(
+        type: ExpandableFabType.up,
+        distance: 60,
+        children:
+         fabIcons
+      ));
   }
+}
+
+String generateRandomString(int len) {
+  var r = Random();
+  const _chars = 'AaBbCcDdEeFfGgHhIiJjKkLlMmNnOoPpQqRrSsTtUuVvWwXxYyZz1234567890';
+  return List.generate(len, (index) => _chars[r.nextInt(_chars.length)]).join();
 }
