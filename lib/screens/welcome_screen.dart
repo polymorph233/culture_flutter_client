@@ -3,7 +3,6 @@ import 'package:culture_flutter_client/widgets/fab.dart';
 import 'package:culture_flutter_client/widgets/festival_carousel.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_expandable_fab/flutter_expandable_fab.dart';
-import 'package:get_it/get_it.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 
@@ -30,13 +29,13 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
     final vm = Provider.of<MainListViewModel>(context);
     final carousel = FestivalCarousel(festivals: vm.randomFestivals(carouselCount));
     
-    final list = OutlinedButton(onPressed: () => context.go("/list"),
+    final list = OutlinedButton(onPressed: () => Navigator.pushNamed(context, '/list'),
       child: const Center(child: Text('Festivals')));
-    final map = OutlinedButton(onPressed: () => context.go("/map"),
+    final map = OutlinedButton(onPressed: () => Navigator.pushNamed(context, '/map'),
       child: const Center(child: Text('Map')));
-    final fav = OutlinedButton(onPressed: () => context.go("/fav"),
+    final fav = OutlinedButton(onPressed: () => Navigator.pushNamed(context, '/fav'),
       child: const Center(child: Text('My Favorites')));
-    final config = OutlinedButton(onPressed: () {  }, child: const Center(child: Text('Settings')));
+    final config = OutlinedButton(onPressed: () => Navigator.pushNamed(context, '/settings'), child: const Center(child: Text('Settings')));
     
     final portrait = [[list, map], [fav, config]];
 
