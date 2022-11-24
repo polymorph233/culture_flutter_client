@@ -16,6 +16,7 @@ class ChipsInput<T> extends StatefulWidget {
     required this.findSuggestions,
     required this.onChanged,
     this.onChipTapped,
+    required this.continuedBody, required this.overlay,
   }) : super(key: key);
 
   final InputDecoration decoration;
@@ -24,6 +25,8 @@ class ChipsInput<T> extends StatefulWidget {
   final ValueChanged<T>? onChipTapped;
   final ChipsBuilder<T> chipBuilder;
   final ChipsBuilder<T> suggestionBuilder;
+  final Widget continuedBody;
+  final bool overlay;
 
   @override
   ChipsInputState<T> createState() => ChipsInputState<T>();
@@ -144,41 +147,42 @@ class ChipsInputState<T> extends State<ChipsInput<T>> implements TextInputClient
 
     return
       Column(
-      crossAxisAlignment: CrossAxisAlignment.stretch,
-      //mainAxisSize: MainAxisSize.min,
-      children: <Widget>[
-        Row(children:
-          <Widget>[
-            Expanded(child:
-              GestureDetector(
-                behavior: HitTestBehavior.opaque,
-                onTap: requestKeyboard,
-                child: InputDecorator(
-                  decoration: widget.decoration,
-                  isFocused: _focusNode?.hasFocus ?? false,
-                  isEmpty: _value.text.isEmpty,
-                  child: Wrap(
-                    spacing: 4.0,
-                    runSpacing: 4.0,
-                    children: chipsChildren,
-                  ),
-                ))),
-            IconButton(onPressed: () {
-              updateEditingValue(TextEditingValue());
-            }, icon: const Icon(Icons.highlight_remove_outlined))
-          ]),
-        _suggestions?.isEmpty ?? true
-        ? SizedBox(height: 10)
-        :
-        Expanded(
-          child: ListView.builder(
-            itemCount: _suggestions?.length ?? 0,
-            itemBuilder: (BuildContext context, int index) {
-              return widget.suggestionBuilder(context, this, _suggestions![index]);
-            },
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        //mainAxisSize: MainAxisSize.min,
+        children: <Widget>[
+          Row(children:
+            <Widget>[
+              Expanded(child:
+                GestureDetector(
+                  behavior: HitTestBehavior.opaque,
+                  onTap: requestKeyboard,
+                  child: InputDecorator(
+                    decoration: widget.decoration,
+                    isFocused: _focusNode?.hasFocus ?? false,
+                    isEmpty: _value.text.isEmpty,
+                    child: Wrap(
+                      spacing: 4.0,
+                      runSpacing: 4.0,
+                      children: chipsChildren,
+                    ),
+                  ))),
+              IconButton(onPressed: () {
+                updateEditingValue(TextEditingValue());
+              }, icon: const Icon(Icons.highlight_remove_outlined))
+            ]),
+          _suggestions?.isEmpty ?? true
+          ? SizedBox(height: 10)
+          :
+          Expanded(
+            child: ListView.builder(
+              itemCount: _suggestions?.length ?? 0,
+              itemBuilder: (BuildContext context, int index) {
+                return widget.suggestionBuilder(context, this, _suggestions![index]);
+              },
+            ),
           ),
-        ),
-      ],
+          widget.continuedBody,
+        ],
       );
   }
 

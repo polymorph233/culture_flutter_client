@@ -24,7 +24,7 @@ class MapListScreen extends StatefulWidget {
 
 class _MapListScreenState extends State<MapListScreen> {
   List<FestivalViewModel> festivals = [];
-  
+
   FestivalViewModel? highlighted;
 
   @override
@@ -42,17 +42,19 @@ class _MapListScreenState extends State<MapListScreen> {
     super.dispose();
   }
 
-  Marker makeMarker(FestivalViewModel fest,) {
+  Marker makeMarker(
+    FestivalViewModel fest,
+  ) {
     final name = fest.name;
 
     return Marker(
-        point: fest.latLng!,
-        builder: (_) => GestureDetector(
+      point: fest.latLng!,
+      builder: (_) => GestureDetector(
           child: const Icon(Icons.place, size: 40, color: Colors.blue),
           onTap: () => setState(() {
-            highlighted = fest;
-          })),
-        );
+                highlighted = fest;
+              })),
+    );
   }
 
   Container makeCard() {
@@ -60,57 +62,52 @@ class _MapListScreenState extends State<MapListScreen> {
       final vm = Provider.of<MainListViewModel>(context, listen: false);
 
       var isLiked = vm.favorites.contains(highlighted);
-      return
-        Container(
+      return Container(
           padding: const EdgeInsets.all(32),
           child: Card(
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              mainAxisAlignment: MainAxisAlignment.center,
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: <Widget>[
-                ListTile(
-                  leading: ImageProviderService.randomImage(highlighted!.domain),
-                  title: Text(highlighted!.name),
-                  subtitle: Text(
-                      "${highlighted!.principalPeriod}\n${highlighted!.principalCommune} ${highlighted!
-                          .principalRegion}"),
-                ),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.end,
-                  children: <Widget>[
-                    IconButton(
-                      icon: const Icon(Icons.info_outline),
-                      onPressed: () {
-                        /* ... */
-                      },
-                    ),
-                    const SizedBox(width: 8),
-                    IconButton(
-                      icon: isLiked
-                          ? const Icon(Icons.favorite)
-                          : const Icon(Icons.favorite_outline),
-                      onPressed:
-                        isLiked
-                          ? () => vm.removeFavorite(highlighted!)
-                          : () => vm.addFavorite(highlighted!),
-                    ),
-                    const SizedBox(width: 8),
-                  ],
-                ),
-              ],
-            )));
+              child: Column(
+            mainAxisSize: MainAxisSize.min,
+            mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: <Widget>[
+              ListTile(
+                leading: ImageProviderService.randomImage(highlighted!.domain),
+                title: Text(highlighted!.name),
+                subtitle: Text(
+                    "${highlighted!.principalPeriod}\n${highlighted!.principalCommune} ${highlighted!.principalRegion}"),
+              ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.end,
+                children: <Widget>[
+                  IconButton(
+                    icon: const Icon(Icons.info_outline),
+                    onPressed: () {
+                      /* ... */
+                    },
+                  ),
+                  const SizedBox(width: 8),
+                  IconButton(
+                    icon: isLiked
+                        ? const Icon(Icons.favorite)
+                        : const Icon(Icons.favorite_outline),
+                    onPressed: isLiked
+                        ? () => vm.removeFavorite(highlighted!)
+                        : () => vm.addFavorite(highlighted!),
+                  ),
+                  const SizedBox(width: 8),
+                ],
+              ),
+            ],
+          )));
     } else {
-      return
-        Container(
+      return Container(
           padding: const EdgeInsets.all(32),
-          child:const Card(child:
-            ListTile(
-              leading: Icon(Icons.question_mark),
-              title: Text("Choose a festival"),
-              subtitle: Text("You will see more details about it."),
-            ))
-      );
+          child: const Card(
+              child: ListTile(
+            leading: Icon(Icons.question_mark),
+            title: Text("Choose a festival"),
+            subtitle: Text("You will see more details about it."),
+          )));
     }
   }
 
@@ -122,8 +119,12 @@ class _MapListScreenState extends State<MapListScreen> {
       });
     } else {
       setState(() {
-        festivals = festivals.where((entry) =>
-            tags.any((tag) => FestivalViewModel.getLabelBySuggestType(tag.type, entry).toLowerCase().contains(tag.content))).toList();
+        festivals = festivals
+            .where((entry) => tags.any((tag) =>
+                FestivalViewModel.getLabelBySuggestType(tag.type, entry)
+                    .toLowerCase()
+                    .contains(tag.content)))
+            .toList();
       });
     }
   }
@@ -142,15 +143,14 @@ class _MapListScreenState extends State<MapListScreen> {
     final GlobalKey<ChipsInputState> _chipKey = GlobalKey();
 
     return Scaffold(
-      appBar: AppBar(title: const Text("All Festivals")),
-      body: Container(
-        padding: const EdgeInsets.all(10),
-        width: MediaQuery.of(context).size.width,
-        height: MediaQuery.of(context).size.height,
-        child:
-          Column(children: <Widget>[
-            Container(
-              child: SearchBox(
+        appBar: AppBar(title: const Text("Map")),
+        body: Container(
+            padding: const EdgeInsets.all(10),
+            width: MediaQuery.of(context).size.width,
+            height: MediaQuery.of(context).size.height,
+            child:
+              Expanded(
+                  child: SearchBox(
                 onTapped: (Suggestion value) {
                   tags.remove(value);
                   search(tags);
@@ -158,60 +158,62 @@ class _MapListScreenState extends State<MapListScreen> {
                 onChanged: (List<Suggestion> value) {
                   tags = value;
                   search(tags);
-                }))
-            ,
-            Expanded(
-              child:
-                Stack(children: [
-                  FlutterMap(
-                    options: MapOptions(
-                      center: LatLng(47.5000, 1.7500),
-                      zoom: 6.5,
-                    ),
-                    nonRotatedChildren: [
-                      AttributionWidget.defaultWidget(
-                      source: 'OpenStreetMap contributors',
-                      onSourceTapped: null,
-                    ),
-                    ],
+                },
+                overlay: true,
+                body: Expanded(
+                  child: Stack(
                     children: [
-                      TileLayer(
-                        urlTemplate:
-                          'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
-                        userAgentPackageName: 'com.example.app',
-                        subdomains: const ['a', 'b', 'c'],
-                      ),
-                      MarkerClusterLayerWidget(
-                        options: MarkerClusterLayerOptions(
-                          maxClusterRadius: 45,
-                          size: const Size(40, 40),
-                          anchor: AnchorPos.align(AnchorAlign.center),
-                          fitBoundsOptions: const FitBoundsOptions(
-                            padding: EdgeInsets.all(50),
-                            maxZoom: 15,
+                      FlutterMap(
+                        options: MapOptions(
+                          center: LatLng(47.5000, 1.7500),
+                          zoom: 6.5,
+                        ),
+                        nonRotatedChildren: [
+                          AttributionWidget.defaultWidget(
+                            source: 'OpenStreetMap contributors',
+                            onSourceTapped: null,
                           ),
-                          markers: markers,
-                          builder: (context, markers) {
-                            return Container(
-                              decoration: BoxDecoration(
-                                  borderRadius: BorderRadius.circular(20),
-                                  color: Colors.blue),
-                              child: Center(
-                                child: Text(
-                                  markers.length.toString(),
-                                  style: const TextStyle(color: Colors.white),
+                        ],
+                        children: [
+                          TileLayer(
+                            urlTemplate:
+                                'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
+                            userAgentPackageName: 'com.example.app',
+                            subdomains: const ['a', 'b', 'c'],
+                          ),
+                          MarkerClusterLayerWidget(
+                            options: MarkerClusterLayerOptions(
+                                maxClusterRadius: 45,
+                                size: const Size(40, 40),
+                                anchor: AnchorPos.align(AnchorAlign.center),
+                                fitBoundsOptions: const FitBoundsOptions(
+                                  padding: EdgeInsets.all(50),
+                                  maxZoom: 15,
                                 ),
-                              ),
-                            );
-                          }),
-                      )
-                    ],
+                                markers: markers,
+                                builder: (context, markers) {
+                                  return Container(
+                                    decoration: BoxDecoration(
+                                        borderRadius: BorderRadius.circular(20),
+                                        color: Colors.blue),
+                                    child: Center(
+                                      child: Text(
+                                        markers.length.toString(),
+                                        style: const TextStyle(
+                                            color: Colors.white),
+                                      ),
+                                    ),
+                                  );
+                                }),
+                          )
+                        ],
+                      ),
+                      makeCard(),
+                    ], //we will create this further down
                   ),
-                  makeCard(),
-                ],//we will create this further down
-            ),
-        )
-      ])));
+                ),
+              )),
+            ));
   }
 }
 

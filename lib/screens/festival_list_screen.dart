@@ -68,8 +68,8 @@ class _FestivalListScreenState extends State<FestivalListScreen> {
             padding: const EdgeInsets.all(10),
             width: MediaQuery.of(context).size.width,
             height: MediaQuery.of(context).size.height,
-            child: Column(children: <Widget>[
-              SearchBox(
+            child:
+              Expanded(child: SearchBox(
                 onTapped: (Suggestion value) {
                   tags.remove(value);
                   search(tags);
@@ -77,20 +77,24 @@ class _FestivalListScreenState extends State<FestivalListScreen> {
                 onChanged: (List<Suggestion> value) {
                   tags = value;
                   search(tags);
-                }),
-              Expanded(
-                  child: FestivalList(
-                    festivals: festivals, favorites: vm.favorites, scrollController: ScrollController(),
-                    onAdd: (fest) => vm.addFavorite(fest),
-                    onDelete: (fest) => vm.removeFavorite(fest),
-                    onClick: (id) =>
-                      Navigator.pushNamed(
-                      context,
-                      ExtractSingleArgumentWidget.routeName,
-                      arguments: SingleArgument(id.toString()))
-            )
-        )
-    ])));
+                },
+                body:
+                  Expanded(
+                    child: FestivalList(
+                      festivals: festivals, favorites: vm.favorites, scrollController: ScrollController(),
+                      onAdd: (fest) => vm.addFavorite(fest),
+                      onDelete: (fest) => vm.removeFavorite(fest),
+                      onClick: (id) =>
+                        Navigator.pushNamed(
+                          context,
+                          ExtractSingleArgumentWidget.routeName,
+                          arguments: SingleArgument(id.toString()))
+                    )
+                ),
+                overlay: false,
+              ),
+
+    )));
   }
 }
 
