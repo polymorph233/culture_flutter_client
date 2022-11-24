@@ -4,7 +4,6 @@ import 'package:culture_flutter_client/view_models/main_list_view_model.dart';
 import 'package:culture_flutter_client/widgets/fab.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_expandable_fab/flutter_expandable_fab.dart';
-import 'package:get_it/get_it.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 

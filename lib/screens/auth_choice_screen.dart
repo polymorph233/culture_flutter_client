@@ -1,9 +1,5 @@
-import 'package:culture_flutter_client/screens/login_screen.dart';
-import 'package:culture_flutter_client/screens/sign_up_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
-import 'package:firebase_auth/firebase_auth.dart';
-import 'package:go_router/go_router.dart';
 
 class AuthChoiceScreen extends StatefulWidget {
   const AuthChoiceScreen({super.key});
@@ -19,19 +15,21 @@ class AuthChoiceScreenState extends State<AuthChoiceScreen> {
       body: Container(
         width: double.infinity,
         height: double.infinity,
-        decoration: BoxDecoration(
+        decoration: const BoxDecoration(
           image: DecorationImage(
               image: AssetImage('assets/images/background_welcome_screen.jpg'),
               fit: BoxFit.cover),
         ),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
+        child: Container(
+          padding: const EdgeInsets.all(96),
+          child: Column(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            Image(
+            const Image(
               image: AssetImage('assets/images/logo2.png'),
               width: 200,
             ),
-            SizedBox(height: 275),
+            const Spacer(),
             ElevatedButton(
               style: ButtonStyle(
                 backgroundColor: MaterialStateProperty.all(Colors.white),
@@ -55,33 +53,10 @@ class AuthChoiceScreenState extends State<AuthChoiceScreen> {
                       fontSize: 30,
                       fontWeight: FontWeight.bold)),
             ),
-            SizedBox(height: 30),
-            ElevatedButton(
-              style: ButtonStyle(
-                backgroundColor: MaterialStateProperty.all(Color(0xFFF9C305)),
-                minimumSize: MaterialStateProperty.all(const Size(170, 50)),
-                side: MaterialStateProperty.all(
-                  const BorderSide(
-                    color: Colors.black,
-                    width: 2,
-                  ),
-                ),
-                shape: MaterialStateProperty.all(
-                  RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(50),
-                  ),
-                ),
-              ),
-              onPressed: () => Navigator.pushNamed(context, '/signup'),
-              child: const Text('Sign up',
-                  style: TextStyle(
-                      color: Colors.black,
-                      fontSize: 30,
-                      fontWeight: FontWeight.bold)),
-            ),
+            const Spacer(),
           ],
         ),
       ),
-    );
+    ));
   }
 }
