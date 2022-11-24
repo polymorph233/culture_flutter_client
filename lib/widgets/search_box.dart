@@ -23,7 +23,7 @@ class _SearchBoxState extends State<SearchBox> {
             Padding(
               padding: const EdgeInsets.all(8.0),
               child: ChipsInput<Suggestion>(
-                decoration: InputDecoration(prefixIcon: Icon(Icons.search), hintText: 'keyword search'),
+                decoration: InputDecoration(prefixIcon: Icon(Icons.search), hintText: 'Tap something ...'),
                 findSuggestions: _findSuggestions,
                 onChanged: (values) => _onChanged(values),
                 chipBuilder: (BuildContext context, ChipsInputState<Suggestion> state, Suggestion suggest) {

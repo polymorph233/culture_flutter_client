@@ -27,7 +27,9 @@ class FestivalCarouselState extends State<FestivalCarousel> {
     return
       Column(
         children: [
-          Expanded(child: CarouselSlider(
+          Expanded(child:
+            widget.festivals.isEmpty ? Center(child: CircularProgressIndicator()) :
+            CarouselSlider(
             items: widget.festivals.map((item) =>
               Container(
                 margin: const EdgeInsets.all(5.0),

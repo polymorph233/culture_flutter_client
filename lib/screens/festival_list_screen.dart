@@ -1,12 +1,12 @@
 
 import 'package:culture_flutter_client/services/dummy_service.dart';
+import 'package:culture_flutter_client/utils/single_string_argument.dart';
 import 'package:culture_flutter_client/view_models/festival_view_model.dart';
 import 'package:culture_flutter_client/view_models/main_list_view_model.dart';
 import 'package:culture_flutter_client/widgets/fab.dart';
 import 'package:culture_flutter_client/widgets/search_box.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_expandable_fab/flutter_expandable_fab.dart';
-import 'package:get_it/get_it.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 
@@ -84,10 +84,13 @@ class _FestivalListScreenState extends State<FestivalListScreen> {
                     onAdd: (fest) => vm.addFavorite(fest),
                     onDelete: (fest) => vm.removeFavorite(fest),
                     onClick: (id) =>
-                        context.pushNamed('festival', params: {"id": id.toString()})))//we will create this further down
-            ])
+                      Navigator.pushNamed(
+                      context,
+                      ExtractSingleArgumentWidget.routeName,
+                      arguments: SingleArgument(id.toString()))
+            )
         )
-    );
+    ])));
   }
 }
 
