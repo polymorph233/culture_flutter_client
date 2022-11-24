@@ -18,7 +18,7 @@ class RecommendFestivalService {
 
     analyzeFavorite();
 
-    if (candidates.isEmpty) {
+    if (candidates.isEmpty && festivals.length > 0) {
       Set<int> indices = {};
       while (indices.length < count) {
         indices.add(Random().nextInt(festivals.length));

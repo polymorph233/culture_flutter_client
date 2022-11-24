@@ -21,38 +21,25 @@ class FestivalCarouselState extends State<FestivalCarousel> {
 
   final CarouselController _controller = CarouselController();
 
-  static const imagePaths = {
-    "cinema": ["cinema1.jpg", "cinema2.jpeg", "cinema3.jpg"],
-    "literature": ["literature1.jpg", "literature2.jpg"],
-    "live": ["live1.jpeg", "live2.jpg", "live3.jpg"],
-    "music": ["music1.jpg", "music2.jpeg"],
-    "pluri": ["pluri1.jpg", "pluri2.jpg", "pluri3.jpg"],
-    "visual": ["visual1.jpg", "visual2.jpg", "visual3.jpg"],
-  };
-
-  static final images =
-  imagePaths.map((key, value) => MapEntry(key, value.map((e) => Image.asset("assets/images/catalogs/$e")).toList()));
 
   static Image randomImage(Domain of) {
+    
+    Image construct(String keyword) => Image.asset("assets/images/catalogs/$keyword/$keyword${Random().nextInt(6) + 1}.png");
+    
     switch (of) {
       case Domain.visualNumericArts:
-        final list = images["visual"]!;
-        return list[Random().nextInt(list.length)];
+        return construct("visual");
       case Domain.cinema:
-        final list = images["cinema"]!;
-        return list[Random().nextInt(list.length)];
+        return construct("cinema");
       case Domain.literature:
-        final list = images["literature"]!;
-        return list[Random().nextInt(list.length)];
+        return construct("literature");
       case Domain.music:
-        final list = images["music"]!;
-        return list[Random().nextInt(list.length)];
+        return construct("music");
       case Domain.pluridiscipline:
-        final list = images["pluri"]!;
-        return list[Random().nextInt(list.length)];
+        return construct("pluri");
       case Domain.liveScene:
-        final list = images["live"]!;
-        return list[Random().nextInt(list.length)];
+        return construct("live");
+        
     }
   }
 
