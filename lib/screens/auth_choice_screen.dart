@@ -28,10 +28,10 @@ class AuthChoiceScreenState extends State<AuthChoiceScreen> {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Image(
-              image: AssetImage('assets/images/logo.png'),
-              width: 150,
+              image: AssetImage('assets/images/logo2.png'),
+              width: 200,
             ),
-            SizedBox(height: 300),
+            SizedBox(height: 275),
             ElevatedButton(
               style: ButtonStyle(
                 backgroundColor: MaterialStateProperty.all(Colors.white),

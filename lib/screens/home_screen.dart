@@ -1,3 +1,4 @@
+import 'package:culture_flutter_client/screens/delete_account.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -39,6 +40,17 @@ class HomeScreenState extends State<HomeScreen> {
                   style: TextStyle(fontSize: 24),
                 ),
                 onPressed: () => FirebaseAuth.instance.signOut()),
+            SizedBox(height: 40),
+            ElevatedButton.icon(
+                style:
+                    ElevatedButton.styleFrom(minimumSize: Size.fromHeight(50)),
+                icon: Icon(Icons.delete_outlined, size: 32),
+                label: Text(
+                  'Delete account',
+                  style: TextStyle(fontSize: 24),
+                ),
+                onPressed: () =>
+                    Navigator.pushNamed(context, '/deleteaccount')),
           ],
         ),
       ),

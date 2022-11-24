@@ -55,7 +55,10 @@ class SignUpScreenState extends State<SignUpScreen> {
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               SizedBox(height: 60),
-              FlutterLogo(size: 120),
+              Image(
+                image: AssetImage('assets/images/logo2.png'),
+                width: 120,
+              ),
               SizedBox(height: 20),
               Text(
                 'SIGN UP',
@@ -65,7 +68,7 @@ class SignUpScreenState extends State<SignUpScreen> {
                     fontSize: 40,
                     color: Colors.black),
               ),
-              Divider(),
+              Divider(thickness: 3),
               SizedBox(height: 40),
               TextFormField(
                 controller: emailController,

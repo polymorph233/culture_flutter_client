@@ -13,6 +13,7 @@ class VerifyEmailScreen extends StatefulWidget {
 
 class VerifyEmailScreenState extends State<VerifyEmailScreen> {
   bool isEmailVerified = false;
+  bool canResendEmail = false;
   Timer? timer;
 
   @override
@@ -26,7 +27,7 @@ class VerifyEmailScreenState extends State<VerifyEmailScreen> {
 
       timer = Timer.periodic(
         Duration(seconds: 3),
-        (_) => Future checkEmailVerified(),
+        (_) => checkEmailVerified(),
       );
     }
   }
@@ -41,6 +42,9 @@ class VerifyEmailScreenState extends State<VerifyEmailScreen> {
     try {
       final user = FirebaseAuth.instance.currentUser!;
       await user.sendEmailVerification();
+      setState(() => canResendEmail = false);
+      await Future.delayed(Duration(seconds: 5));
+      setState(() => canResendEmail = true);
     } catch (e) {
       Utils.showSnackBar(e.toString());
     }
@@ -53,9 +57,43 @@ class VerifyEmailScreenState extends State<VerifyEmailScreen> {
           appBar: AppBar(
             title: Text('Verify Email'),
           ),
+          body: Padding(
+            padding: EdgeInsets.all(16),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Text(
+                  'A verification email has been sent to your email.',
+                  style: TextStyle(fontSize: 20),
+                  textAlign: TextAlign.center,
+                ),
+                SizedBox(height: 24),
+                ElevatedButton.icon(
+                  style: ElevatedButton.styleFrom(
+                      minimumSize: Size.fromHeight(50)),
+                  icon: Icon(Icons.email, size: 32),
+                  label: Text(
+                    'Resent Email',
+                    style: TextStyle(fontSize: 24),
+                  ),
+                  onPressed: canResendEmail ? sendVerificationEmail : null,
+                ),
+                SizedBox(height: 8),
+                TextButton(
+                    style: ElevatedButton.styleFrom(
+                      minimumSize: Size.fromHeight(50),
+                    ),
+                    child: Text(
+                      'Cancel',
+                      style: TextStyle(fontSize: 24),
+                    ),
+                    onPressed: () => FirebaseAuth.instance.signOut())
+              ],
+            ),
+          ),
         );
 
-  Future checkEmailVerified() async{
+  Future checkEmailVerified() async {
     await FirebaseAuth.instance.currentUser!.reload();
 
     setState(() {

@@ -1,5 +1,6 @@
 import 'package:culture_flutter_client/screens/auth_choice_screen.dart';
 import 'package:culture_flutter_client/screens/auth_screen.dart';
+import 'package:culture_flutter_client/screens/delete_account.dart';
 import 'package:culture_flutter_client/screens/home_screen.dart';
 import 'package:culture_flutter_client/screens/login_screen.dart';
 import 'package:culture_flutter_client/screens/sign_up_screen.dart';
@@ -35,7 +36,8 @@ class MyApp extends StatelessWidget {
         '/login': (context) => LoginScreen(
               onClickedSignUp: () {},
             ),
-        '/home': (context) => HomeScreen()
+        '/home': (context) => HomeScreen(),
+        '/deleteaccount': (context) => DeleteAccountScreen()
       },
       home: MainPage(),
       debugShowCheckedModeBanner: false,
@@ -54,9 +56,7 @@ class MainPage extends StatelessWidget {
               return Center(child: CircularProgressIndicator());
             } else if (snapshot.hasError) {
               return Center(child: Text('Something went wrong!'));
-            }
-            //if user is sign in
-            else if (snapshot.hasData) {
+            } else if (snapshot.hasData) {
               return VerifyEmailScreen();
             } else {
               return AuthChoiceScreen();
