@@ -62,7 +62,7 @@ class FestivalCarouselState extends State<FestivalCarousel> {
       Column(
         children: [
           Expanded(child:
-            widget.festivals.isEmpty ? CircularProgressIndicator() :
+            widget.festivals.isEmpty ? Center(child: CircularProgressIndicator()) :
             CarouselSlider(
             items: widget.festivals.map((item) =>
               Container(
