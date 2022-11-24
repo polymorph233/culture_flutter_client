@@ -1,4 +1,4 @@
-
+import 'package:culture_flutter_client/services/img_provider_service.dart';
 import 'package:culture_flutter_client/view_models/festival_view_model.dart';
 import 'package:culture_flutter_client/view_models/main_list_view_model.dart';
 import 'package:culture_flutter_client/widgets/fab.dart';
@@ -21,99 +21,172 @@ class MapListScreen extends StatefulWidget {
   @override
   _MapListScreenState createState() => _MapListScreenState();
 }
-class _MapListScreenState extends State<MapListScreen> {
 
+class _MapListScreenState extends State<MapListScreen> {
   List<FestivalViewModel> festivals = [];
+  
+  FestivalViewModel? highlighted;
 
   @override
   void initState() {
     super.initState();
     final vm = Provider.of<MainListViewModel>(context, listen: false);
 
-    vm.update().then((_) =>
-        setState(() =>{ festivals = vm.festivals}));
+    vm.update().then((_) => setState(() {
+          festivals = vm.festivals;
+        }));
   }
 
   @override
   void dispose() {
     super.dispose();
   }
-  
-  Marker _fromPlace(Place p) {
-    return Marker(point: LatLng(p.lat, p.lon), builder: (_) => const Icon(Icons.pin_drop));
+
+  Marker makeMarker(FestivalViewModel fest,) {
+    final name = fest.name;
+
+    return Marker(
+        point: fest.latLng!,
+        builder: (_) => GestureDetector(
+          child: const Icon(Icons.place, size: 40, color: Colors.blue),
+          onTap: () => setState(() {
+            highlighted = fest;
+          })),
+        );
+  }
+
+  Container makeCard() {
+    if (highlighted != null) {
+      final vm = Provider.of<MainListViewModel>(context, listen: false);
+
+      var isLiked = vm.favorites.contains(highlighted);
+      return
+        Container(
+          padding: const EdgeInsets.all(32),
+          child: Card(
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: <Widget>[
+                ListTile(
+                  leading: ImageProviderService.randomImage(highlighted!.domain),
+                  title: Text(highlighted!.name),
+                  subtitle: Text(
+                      "${highlighted!.principalPeriod}\n${highlighted!.principalCommune} ${highlighted!
+                          .principalRegion}"),
+                ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  children: <Widget>[
+                    IconButton(
+                      icon: const Icon(Icons.info_outline),
+                      onPressed: () {
+                        /* ... */
+                      },
+                    ),
+                    const SizedBox(width: 8),
+                    IconButton(
+                      icon: isLiked
+                          ? const Icon(Icons.favorite)
+                          : const Icon(Icons.favorite_outline),
+                      onPressed:
+                        isLiked
+                          ? () => vm.removeFavorite(highlighted!)
+                          : () => vm.addFavorite(highlighted!),
+                    ),
+                    const SizedBox(width: 8),
+                  ],
+                ),
+              ],
+            )));
+    } else {
+      return
+        Container(
+          padding: const EdgeInsets.all(32),
+          child:const Card(child:
+            ListTile(
+              leading: Icon(Icons.question_mark),
+              title: Text("Choose a festival"),
+              subtitle: Text("You will see more details about it."),
+            ))
+      );
+    }
   }
 
   @override
   Widget build(BuildContext context) {
-
     final vm = Provider.of<MainListViewModel>(context);
 
-    final markers = festivals.where((fest) => fest.place != null).map((fest) => _fromPlace(fest.place!)).toList();
+    final markers = festivals
+        .where((fest) => fest.latLng != null)
+        .map((fest) => makeMarker(fest))
+        .toList();
 
     List<String> tags = [];
 
     final GlobalKey<ChipsInputState> _chipKey = GlobalKey();
 
     return Scaffold(
-        appBar: AppBar(
-            title: const Text("All Festivals")
-        ),
-        body: Container(
-            padding: const EdgeInsets.all(10),
-            width: MediaQuery.of(context).size.width,
-            height: MediaQuery.of(context).size.height,
-            child: Column(children: <Widget>[
-              Expanded(child:
-                FlutterMap(
-                  options: MapOptions(
-                    center: LatLng(47.5000, 1.7500),
-                    zoom: 6.5,
-                  ),
-                  nonRotatedChildren: [
-                    AttributionWidget.defaultWidget(
-                      source: 'OpenStreetMap contributors',
-                      onSourceTapped: null,
-                    ),
-                  ],
-                  children: [
-                    TileLayer(
-                      urlTemplate: 'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
-                      userAgentPackageName: 'com.example.app',
-                      subdomains: const ['a', 'b', 'c'],
-                    ),
-                    MarkerClusterLayerWidget(
-                      options: MarkerClusterLayerOptions(
-                        maxClusterRadius: 45,
-                        size: const Size(40, 40),
-                        anchor: AnchorPos.align(AnchorAlign.center),
-                        fitBoundsOptions: const FitBoundsOptions(
-                          padding: EdgeInsets.all(50),
-                          maxZoom: 15,
-                        ),
-                        markers: markers,
-                        builder: (context, markers) {
-                          return Container(
-                            decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(20),
-                                color: Colors.blue),
-                            child: Center(
-                              child: Text(
-                                markers.length.toString(),
-                                style: const TextStyle(color: Colors.white),
-                              ),
-                            ),
-                          );
-                        }),
-                    )
-                  ],
+      appBar: AppBar(title: const Text("All Festivals")),
+      body: Container(
+        padding: const EdgeInsets.all(10),
+        width: MediaQuery.of(context).size.width,
+        height: MediaQuery.of(context).size.height,
+        child: Stack(children: [
+          Column(children: <Widget>[
+            Expanded(
+              child: FlutterMap(
+                options: MapOptions(
+                  center: LatLng(47.5000, 1.7500),
+                  zoom: 6.5,
                 ),
-              ),//we will create this further down
-            ])
-        )
-    );
+                nonRotatedChildren: [
+                  AttributionWidget.defaultWidget(
+                    source: 'OpenStreetMap contributors',
+                    onSourceTapped: null,
+                  ),
+                ],
+                children: [
+                  TileLayer(
+                    urlTemplate:
+                        'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
+                    userAgentPackageName: 'com.example.app',
+                    subdomains: const ['a', 'b', 'c'],
+                  ),
+                  MarkerClusterLayerWidget(
+                    options: MarkerClusterLayerOptions(
+                      maxClusterRadius: 45,
+                      size: const Size(40, 40),
+                      anchor: AnchorPos.align(AnchorAlign.center),
+                      fitBoundsOptions: const FitBoundsOptions(
+                        padding: EdgeInsets.all(50),
+                        maxZoom: 15,
+                      ),
+                      markers: markers,
+                      builder: (context, markers) {
+                        return Container(
+                          decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(20),
+                              color: Colors.blue),
+                          child: Center(
+                            child: Text(
+                              markers.length.toString(),
+                              style: const TextStyle(color: Colors.white),
+                            ),
+                          ),
+                        );
+                      }),
+                  )
+                ],
+              ),
+            ), //we will create this further down
+          ]),
+          makeCard(),
+        ])
+      ));
   }
 }
-
 
 class MapListEntry extends StatefulWidget {
   const MapListEntry({super.key});
@@ -123,18 +196,14 @@ class MapListEntry extends StatefulWidget {
 }
 
 class _MapListEntryState extends State<MapListEntry> {
-
-
   @override
   Widget build(BuildContext context) {
     final vm = Provider.of<MainListViewModel>(context);
     return Scaffold(
         body: ChangeNotifierProvider(
-            create: (context) => vm,
-            child: const MapListScreen()
-        ),
+            create: (context) => vm, child: const MapListScreen()),
         floatingActionButtonLocation: ExpandableFab.location,
-        floatingActionButton: const NavigationFab(currentPageType: PageType.festivalMap)
-    );
+        floatingActionButton:
+            const NavigationFab(currentPageType: PageType.festivalMap));
   }
 }

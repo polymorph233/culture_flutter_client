@@ -4,6 +4,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:latlong2/latlong.dart';
 import 'package:osm_nominatim/osm_nominatim.dart';
 
 enum TerritorialSize {
@@ -49,11 +50,11 @@ class Festival {
   final String? officialSite;
   final int? zipCode;
   final int inseeCode;
-  final Place? place;
+  final LatLng? latLng;
   final Domain domain;
 
   // And other fields...
 
-  Festival({required this.name, this.territorialSize, required this.principalRegion, required this.principalDepartment, required this.principalCommune, required this.principalPeriod, this.officialSite, this.zipCode, required this.inseeCode, this.place, required this.domain});
+  Festival({required this.name, this.territorialSize, required this.principalRegion, required this.principalDepartment, required this.principalCommune, required this.principalPeriod, this.officialSite, this.zipCode, required this.inseeCode, required this.domain, this.latLng});
 
 }

@@ -1,6 +1,7 @@
 import 'dart:math';
 
 import 'package:carousel_slider/carousel_slider.dart';
+import 'package:culture_flutter_client/services/img_provider_service.dart';
 import 'package:flutter/material.dart';
 
 import '../models/festival.dart';
@@ -21,28 +22,6 @@ class FestivalCarouselState extends State<FestivalCarousel> {
 
   final CarouselController _controller = CarouselController();
 
-
-  static Image randomImage(Domain of) {
-    
-    Image construct(String keyword) => Image.asset("assets/images/catalogs/$keyword/$keyword${Random().nextInt(6) + 1}.png");
-    
-    switch (of) {
-      case Domain.visualNumericArts:
-        return construct("visual");
-      case Domain.cinema:
-        return construct("cinema");
-      case Domain.literature:
-        return construct("literature");
-      case Domain.music:
-        return construct("music");
-      case Domain.pluridiscipline:
-        return construct("pluri");
-      case Domain.liveScene:
-        return construct("live");
-        
-    }
-  }
-
   @override
   Widget build(BuildContext context) {
     return
@@ -59,7 +38,7 @@ class FestivalCarouselState extends State<FestivalCarousel> {
                       SizedBox.expand(
                         child: FittedBox(
                           fit: BoxFit.fill,
-                          child: randomImage(item.domain),
+                          child: ImageProviderService.randomImage(item.domain),
                       )),
                       Positioned(
                         bottom: 0.0,
