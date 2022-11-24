@@ -35,7 +35,7 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
       child: const Center(child: Text('Map')));
     final fav = OutlinedButton(onPressed: () => Navigator.pushNamed(context, '/fav'),
       child: const Center(child: Text('My Favorites')));
-    final config = OutlinedButton(onPressed: () { /* TODO */ }, child: const Center(child: Text('Settings')));
+    final config = OutlinedButton(onPressed: () => Navigator.pushNamed(context, '/settings'), child: const Center(child: Text('Settings')));
     
     final portrait = [[list, map], [fav, config]];
 

@@ -1,6 +1,6 @@
 import 'package:culture_flutter_client/screens/cover_screen.dart';
 import 'package:culture_flutter_client/screens/delete_account.dart';
-import 'package:culture_flutter_client/screens/home_screen.dart';
+import 'package:culture_flutter_client/screens/settings_screen.dart';
 import 'package:culture_flutter_client/screens/login_screen.dart';
 import 'package:culture_flutter_client/services/utils.dart';
 import 'package:culture_flutter_client/utils/single_string_argument.dart';
@@ -25,37 +25,6 @@ void main() async {
 }
 
 final navigatorKey = GlobalKey<NavigatorState>();
-// GoRouter configuration
-final _router = GoRouter(
-  routes: [
-    GoRoute(
-      path: '/',
-      builder: (context, state) => const WelcomeScreenEntry(),
-    ),
-    GoRoute(
-      path: "/list",
-      builder: (context, state) => const FestivalListEntry(),
-    ),
-    GoRoute(
-      path: "/fav",
-      builder: (context, state) => const FavoriteFestivalsEntry(),
-    ),
-    GoRoute(
-      path: "/map",
-      builder: (context, state) => const MapListEntry(),
-    ),
-    GoRoute(
-      path: "/fest/:id",
-      name: "festival",
-      builder: (context, state) {
-        int id = int.parse(state.params['id']!);
-        return FestivalDetailEntry(id: id);
-      }
-    )
-    /* TODO GoRoute to comment list
-     * */
-  ],
-);
 
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
@@ -73,7 +42,7 @@ class MyApp extends StatelessWidget {
           routes: {
             '/auth': (context) => const CoverScreen(),
             '/login': (context) => LoginScreen(),
-            '/home': (context) => const SettingsScreen(),
+            '/settings': (context) => const SettingsScreen(),
             '/deleteaccount': (context) => const DeleteAccountScreen(),
             '/welcome': (context) => WelcomeScreenEntry(),
             '/list': (context) => FestivalListEntry(),

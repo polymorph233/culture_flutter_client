@@ -1,6 +1,6 @@
 import 'dart:async';
 
-import 'package:culture_flutter_client/screens/home_screen.dart';
+import 'package:culture_flutter_client/screens/settings_screen.dart';
 import 'package:culture_flutter_client/screens/welcome_screen.dart';
 import 'package:culture_flutter_client/services/utils.dart';
 import 'package:firebase_auth/firebase_auth.dart';

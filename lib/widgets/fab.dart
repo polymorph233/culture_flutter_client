@@ -1,4 +1,5 @@
 import 'package:culture_flutter_client/view_models/festival_detail_view_model.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_expandable_fab/flutter_expandable_fab.dart';
@@ -63,7 +64,7 @@ class NavigationFabState extends State<NavigationFab> {
         tooltip: "Log out",
         heroTag: "logoutBtn",
         child: const Icon(Icons.logout),
-        onPressed: () { /* TODO */ },
+        onPressed: () => FirebaseAuth.instance.signOut(),
       )]
       +
         (widget.currentPageType == PageType.festivalDetail ? [share] : <Widget>[]) +

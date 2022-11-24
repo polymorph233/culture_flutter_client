@@ -8,6 +8,7 @@ import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 
 import '../services/utils.dart';
+import '../utils/validator.dart';
 
 class LoginScreen extends StatefulWidget {
   @override
@@ -29,10 +30,6 @@ class LoginScreenState extends State<LoginScreen> {
     passwordController.dispose();
 
     super.dispose();
-  }
-
-  bool isValidEmail(String? email) {
-    return EmailValidator.validate(email ?? "");
   }
 
   @override
@@ -74,7 +71,7 @@ class LoginScreenState extends State<LoginScreen> {
                         keyboardType: TextInputType.emailAddress,
                         controller: emailController,
                         autovalidateMode: AutovalidateMode.onUserInteraction,
-                        validator: (input) => isValidEmail(input)
+                        validator: (input) => Validator.isValidEmail(input)
                             ? null
                             : "Please provide a valid email address.",
                         textInputAction: TextInputAction.next,
@@ -95,12 +92,9 @@ class LoginScreenState extends State<LoginScreen> {
                       labelText: "Password",
                     ),
                     autovalidateMode: AutovalidateMode.onUserInteraction,
-                    validator: (pass) => ((pass?.length ?? 0) > 6 &&
-                            RegExp(r"[a-zA-Z0-9-_\?\*#\(\)]+")
-                                .hasMatch(pass ?? "")
+                    validator: (pass) => Validator.isValidPassword(pass)
                         ? null
                         : "Need at least 6 chars in [a-zA-z0-9-_#?*()]."),
-                  ),
                   const Divider(height: 48),
                   Container(
                     padding: EdgeInsets.only(left: 24, right: 24),
@@ -147,7 +141,7 @@ class LoginScreenState extends State<LoginScreen> {
   }
 
   void checkIfEmailExists(String email) async {
-    if (isValidEmail(email)) {
+    if (Validator.isValidEmail(email)) {
       setState(() {
         checkingUserState = "Checking ...";
       });
