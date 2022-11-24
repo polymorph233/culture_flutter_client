@@ -2,6 +2,7 @@ import 'package:culture_flutter_client/models/comment.dart';
 import 'package:culture_flutter_client/models/festival.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:latlong2/latlong.dart';
 import 'package:osm_nominatim/osm_nominatim.dart';
 
 import '../view_models/festival_view_model.dart';
@@ -16,34 +17,36 @@ class FestivalData {
   final String? officialSite;
   final int? zipCode;
   final int inseeCode;
-  final int? streetCode;
-  final String? streetType;
-  final String? streetName;
-  final String? addressComplement;
+  final String? geoLocation;
   final Domain domain;
   // And other fields...
 
-  FestivalData({required this.name, this.territorialSize, required this.principalRegion, required this.principalDepartment, required this.principalCommune, required this.principalPeriod, this.officialSite, this.zipCode, required this.inseeCode, this.streetCode, this.streetType, this.streetName, this.addressComplement, required this.domain});
+  FestivalData({required this.name, this.territorialSize, required this.principalRegion, required this.principalDepartment, required this.principalCommune, required this.principalPeriod, this.officialSite, this.zipCode, required this.inseeCode, required this.domain, this.geoLocation});
 
   Future<Festival> toFestival() async {
     List<Place> place = [];
-    if (streetName != null) {
-      final searchQuery = "${addressComplement ?? ""} ${streetCode?.toString() ?? ""} ${streetType ?? ""} $streetName";
-      place = await Nominatim.searchByName(street: searchQuery, city: principalCommune, county: principalDepartment, state: principalRegion, country: "France", postalCode: zipCode?.toString() ?? "", limit: 1);
+    LatLng? _latLng;
+    if (geoLocation != null) {
+      final latLng = geoLocation?.split(",").map((e) => double.parse(e)).toList();
+
+      if (latLng != null) {
+        _latLng = LatLng(latLng[0], latLng[1]);
+      }
     }
     return Festival(
         name: name, principalRegion: principalRegion, territorialSize: territorialSize, principalDepartment: principalDepartment, principalCommune: principalCommune, principalPeriod: principalPeriod, officialSite: this.officialSite, zipCode: this.zipCode, inseeCode: inseeCode,
-        place: place.isEmpty ? null : place.first, domain: domain,
+        latLng: _latLng,
+        domain: domain,
     );
   }
 }
 
 class DummyService {
   static List<FestivalData> queue = <FestivalData>[
-    FestivalData(name: "Alphapodis", territorialSize: TerritorialSize.departmental, principalRegion: "Normandie", principalDepartment: "Orne", principalCommune: "Alençon", principalPeriod: "Avant-saison (1er janvier - 20 juin)", officialSite: "www.alphapodis.fr", zipCode: 61000, inseeCode: 61001, domain: Domain.pluridiscipline),
-    FestivalData(name: "World festival Ambert", principalRegion: "Auvergne-Rhône-Alpes", principalDepartment: "Puy-de-Dôme", principalCommune: "Ambert", principalPeriod: "Saison (21 juin - 5 septembre)", officialSite: "https://festival-ambert.fr/", zipCode: 63600, inseeCode: 63003, domain: Domain.cinema),
+    FestivalData(name: "Alphapodis", territorialSize: TerritorialSize.departmental, principalRegion: "Normandie", principalDepartment: "Orne", principalCommune: "Alençon", principalPeriod: "Avant-saison (1er janvier - 20 juin)", officialSite: "www.alphapodis.fr", zipCode: 61000, inseeCode: 61001, domain: Domain.pluridiscipline, geoLocation: "48.417824,0.101097"),
+    FestivalData(name: "World festival Ambert", principalRegion: "Auvergne-Rhône-Alpes", principalDepartment: "Puy-de-Dôme", principalCommune: "Ambert", principalPeriod: "Saison (21 juin - 5 septembre)", officialSite: "https://festival-ambert.fr/", zipCode: 63600, inseeCode: 63003, domain: Domain.cinema, geoLocation: "45.549591,3.745486"),
     FestivalData(name: "Cuivres en Nord", principalRegion: "Hauts-de-France", principalDepartment: "Nord", principalCommune: "Anor", principalPeriod: "Après-saison (6 septembre - 31 décembre)", officialSite: "https://www.cuivresennord.com/", zipCode: 59186, inseeCode: 59012, domain: Domain.visualNumericArts),
-    FestivalData(name: "Autres Mesures", principalRegion: "Bretagne", principalDepartment: "Ille-et-Vilaine", principalCommune: "Rennes", principalPeriod: "Avant-saison (1er janvier - 20 juin)", officialSite: "https://autresmesures.wixsite.com", zipCode: 35000, inseeCode: 35238, streetName: "Place de la gare", domain: Domain.music),
+    FestivalData(name: "Autres Mesures", principalRegion: "Bretagne", principalDepartment: "Ille-et-Vilaine", principalCommune: "Rennes", principalPeriod: "Avant-saison (1er janvier - 20 juin)", officialSite: "https://autresmesures.wixsite.com", zipCode: 35000, inseeCode: 35238, domain: Domain.music, geoLocation: "48.092601,-1.690824"),
   ];
   
   static Map<int, List<Comment>> comments = {

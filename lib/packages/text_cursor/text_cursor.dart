@@ -142,7 +142,8 @@ class ChipsInputState<T> extends State<ChipsInput<T>> implements TextInputClient
       ),
     );
 
-    return Column(
+    return
+      Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       //mainAxisSize: MainAxisSize.min,
       children: <Widget>[
@@ -155,17 +156,20 @@ class ChipsInputState<T> extends State<ChipsInput<T>> implements TextInputClient
                 child: InputDecorator(
                   decoration: widget.decoration,
                   isFocused: _focusNode?.hasFocus ?? false,
-                  isEmpty: _value.text.length == 0,
+                  isEmpty: _value.text.isEmpty,
                   child: Wrap(
-                    children: chipsChildren,
                     spacing: 4.0,
                     runSpacing: 4.0,
+                    children: chipsChildren,
                   ),
                 ))),
             IconButton(onPressed: () {
               updateEditingValue(TextEditingValue());
             }, icon: const Icon(Icons.highlight_remove_outlined))
           ]),
+        _suggestions?.isEmpty ?? true
+        ? SizedBox(height: 10)
+        :
         Expanded(
           child: ListView.builder(
             itemCount: _suggestions?.length ?? 0,
@@ -175,7 +179,7 @@ class ChipsInputState<T> extends State<ChipsInput<T>> implements TextInputClient
           ),
         ),
       ],
-    );
+      );
   }
 
   @override

@@ -1,5 +1,6 @@
 // ViewModel
 
+import 'package:latlong2/latlong.dart';
 import 'package:osm_nominatim/osm_nominatim.dart';
 
 import '../models/festival.dart';
@@ -48,8 +49,8 @@ class FestivalViewModel {
     return model.inseeCode;
   }
 
-  Place? get place {
-    return model.place;
+  LatLng? get latLng {
+    return model.latLng;
   }
 
   Domain get domain {

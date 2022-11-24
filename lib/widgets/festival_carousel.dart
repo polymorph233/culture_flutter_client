@@ -1,6 +1,7 @@
 import 'dart:math';
 
 import 'package:carousel_slider/carousel_slider.dart';
+import 'package:culture_flutter_client/services/img_provider_service.dart';
 import 'package:flutter/material.dart';
 
 import '../models/festival.dart';
@@ -21,41 +22,6 @@ class FestivalCarouselState extends State<FestivalCarousel> {
 
   final CarouselController _controller = CarouselController();
 
-  static const imagePaths = {
-    "cinema": ["cinema1.jpg", "cinema2.jpeg", "cinema3.jpg"],
-    "literature": ["literature1.jpg", "literature2.jpg"],
-    "live": ["live1.jpeg", "live2.jpg", "live3.jpg"],
-    "music": ["music1.jpg", "music2.jpeg"],
-    "pluri": ["pluri1.jpg", "pluri2.jpg", "pluri3.jpg"],
-    "visual": ["visual1.jpg", "visual2.jpg", "visual3.jpg"],
-  };
-
-  static final images =
-  imagePaths.map((key, value) => MapEntry(key, value.map((e) => Image.asset("assets/images/catalogs/$e")).toList()));
-
-  static Image randomImage(Domain of) {
-    switch (of) {
-      case Domain.visualNumericArts:
-        final list = images["visual"]!;
-        return list[Random().nextInt(list.length)];
-      case Domain.cinema:
-        final list = images["cinema"]!;
-        return list[Random().nextInt(list.length)];
-      case Domain.literature:
-        final list = images["literature"]!;
-        return list[Random().nextInt(list.length)];
-      case Domain.music:
-        final list = images["music"]!;
-        return list[Random().nextInt(list.length)];
-      case Domain.pluridiscipline:
-        final list = images["pluri"]!;
-        return list[Random().nextInt(list.length)];
-      case Domain.liveScene:
-        final list = images["live"]!;
-        return list[Random().nextInt(list.length)];
-    }
-  }
-
   @override
   Widget build(BuildContext context) {
     return
@@ -74,7 +40,7 @@ class FestivalCarouselState extends State<FestivalCarousel> {
                       SizedBox.expand(
                         child: FittedBox(
                           fit: BoxFit.fill,
-                          child: randomImage(item.domain),
+                          child: ImageProviderService.randomImage(item.domain),
                       )),
                       Positioned(
                         bottom: 0.0,
