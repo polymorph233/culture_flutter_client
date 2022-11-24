@@ -9,6 +9,7 @@ import 'package:provider/provider.dart';
 
 import '../packages/text_cursor/text_cursor.dart';
 import '../services/dummy_service.dart';
+import '../utils/single_string_argument.dart';
 import '../widgets/festival_list.dart';
 import '../widgets/search_box.dart';
 
@@ -99,7 +100,10 @@ class _FavoriteFestivalListScreenState extends State<FavoriteFestivalListScreen>
                   scrollController: ScrollController(),
                   onDelete: (fest) => remove(fest),
                   onClick: (id) =>
-                    context.pushNamed('festival', params: {"id": id.toString()})
+                      Navigator.pushNamed(
+                        context,
+                        ExtractSingleArgumentWidget.routeName,
+                        arguments: SingleArgument(id.toString()))
                 ))
             ])
         )

@@ -1,8 +1,9 @@
-import 'package:culture_flutter_client/screens/auth_choice_screen.dart';
+import 'package:culture_flutter_client/screens/cover_screen.dart';
 import 'package:culture_flutter_client/screens/delete_account.dart';
 import 'package:culture_flutter_client/screens/home_screen.dart';
 import 'package:culture_flutter_client/screens/login_screen.dart';
 import 'package:culture_flutter_client/services/utils.dart';
+import 'package:culture_flutter_client/utils/single_string_argument.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:culture_flutter_client/screens/favorites_screen.dart';
@@ -70,10 +71,17 @@ class MyApp extends StatelessWidget {
           scaffoldMessengerKey: Utils.messengerKey,
           navigatorKey: navigatorKey,
           routes: {
-            '/auth': (context) => const AuthChoiceScreen(),
+            '/auth': (context) => const CoverScreen(),
             '/login': (context) => LoginScreen(),
-            '/home': (context) => const HomeScreen(),
-            '/deleteaccount': (context) => const DeleteAccountScreen()
+            '/home': (context) => const SettingsScreen(),
+            '/deleteaccount': (context) => const DeleteAccountScreen(),
+            '/welcome': (context) => WelcomeScreenEntry(),
+            '/list': (context) => FestivalListEntry(),
+            '/fav': (context) => FavoriteFestivalsEntry(),
+            '/map': (context) => MapListEntry(),
+            ExtractSingleArgumentWidget.routeName:
+              (context) =>
+                  ExtractSingleArgumentWidget(bodyProvider: (str) => FestivalDetailEntry(id: int.parse(str))),
           },
           home: MainPage(),
           debugShowCheckedModeBanner: false,
@@ -92,11 +100,11 @@ class MainPage extends StatelessWidget {
           if (snapshot.connectionState == ConnectionState.waiting) {
             return const Center(child: CircularProgressIndicator());
           } else if (snapshot.hasError) {
-            return const Center(child: Text('Something went wrong!'));
+            return const Center(child: Text('Something went wrong!\nPlease contact technical support at\nsupport@festival.app'));
           } else if (snapshot.hasData) {
-            return VerifyEmailScreen();
+            return LoginDispatchScreen();
           } else {
-            return const AuthChoiceScreen();
+            return const CoverScreen();
           }
         }),
     );

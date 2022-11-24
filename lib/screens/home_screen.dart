@@ -3,14 +3,14 @@ import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
-class HomeScreen extends StatefulWidget {
-  const HomeScreen({super.key});
+class SettingsScreen extends StatefulWidget {
+  const SettingsScreen({super.key});
 
   @override
-  HomeScreenState createState() => new HomeScreenState();
+  SettingsScreenState createState() => new SettingsScreenState();
 }
 
-class HomeScreenState extends State<HomeScreen> {
+class SettingsScreenState extends State<SettingsScreen> {
   @override
   Widget build(BuildContext context) {
     //final user = firebaseAuth.instance.currentUser;

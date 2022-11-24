@@ -1,14 +1,13 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/cupertino.dart';
 
-class AuthChoiceScreen extends StatefulWidget {
-  const AuthChoiceScreen({super.key});
+class CoverScreen extends StatefulWidget {
+  const CoverScreen({super.key});
 
   @override
-  AuthChoiceScreenState createState() => new AuthChoiceScreenState();
+  CoverScreenState createState() => new CoverScreenState();
 }
 
-class AuthChoiceScreenState extends State<AuthChoiceScreen> {
+class CoverScreenState extends State<CoverScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(

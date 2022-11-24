@@ -177,25 +177,25 @@ class _FestivalDetailEntryState extends State<FestivalDetailEntry> {
         tooltip: "Home",
         heroTag: "welcomeBtn",
         child: const Icon(Icons.home),
-        onPressed: () => context.go("/"),
+        onPressed: () => Navigator.pushNamed(context, '/welcome'),
       ),
       FloatingActionButton.small(
         tooltip: "List",
         heroTag: "listBtn",
         child: const Icon(Icons.list),
-        onPressed: () => context.go("/list"),
+        onPressed: () => Navigator.pushNamed(context, '/list'),
       ),
       FloatingActionButton.small(
         tooltip: "Map",
         heroTag: "mapBtn",
         child: const Icon(Icons.map),
-        onPressed: () => context.go("/map"),
+        onPressed: () => Navigator.pushNamed(context, '/map'),
       ),
       FloatingActionButton.small(
         tooltip: "Favorites",
         heroTag: "favBtn",
         child: const Icon(Icons.favorite),
-        onPressed: () => context.go("/fav"),
+        onPressed: () => Navigator.pushNamed(context, '/fav'),
       ),
     ];
 

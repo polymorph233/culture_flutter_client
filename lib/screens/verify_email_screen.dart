@@ -1,18 +1,19 @@
 import 'dart:async';
 
 import 'package:culture_flutter_client/screens/home_screen.dart';
+import 'package:culture_flutter_client/screens/welcome_screen.dart';
 import 'package:culture_flutter_client/services/utils.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
-class VerifyEmailScreen extends StatefulWidget {
+class LoginDispatchScreen extends StatefulWidget {
   @override
-  VerifyEmailScreenState createState() => new VerifyEmailScreenState();
+  LoginDispatchScreenState createState() => new LoginDispatchScreenState();
 }
 
-class VerifyEmailScreenState extends State<VerifyEmailScreen> {
-  bool isEmailVerified = false;
+class LoginDispatchScreenState extends State<LoginDispatchScreen> {
+  bool hasSuccessfullyLogined = false;
   bool canResendEmail = false;
   Timer? timer;
 
@@ -20,9 +21,9 @@ class VerifyEmailScreenState extends State<VerifyEmailScreen> {
   void initState() {
     super.initState();
 
-    isEmailVerified = FirebaseAuth.instance.currentUser!.emailVerified;
+    hasSuccessfullyLogined = FirebaseAuth.instance.currentUser!.emailVerified;
 
-    if (!isEmailVerified) {
+    if (!hasSuccessfullyLogined) {
       sendVerificationEmail();
 
       timer = Timer.periodic(
@@ -50,12 +51,14 @@ class VerifyEmailScreenState extends State<VerifyEmailScreen> {
     }
   }
 
+
+
   @override
-  Widget build(BuildContext context) => isEmailVerified
-      ? HomeScreen()
+  Widget build(BuildContext context) => hasSuccessfullyLogined
+      ? WelcomeScreenEntry()
       : Scaffold(
           appBar: AppBar(
-            title: Text('Verify Email'),
+            title: Text('Please verify your email'),
           ),
           body: Padding(
             padding: EdgeInsets.all(16),
@@ -97,9 +100,9 @@ class VerifyEmailScreenState extends State<VerifyEmailScreen> {
     await FirebaseAuth.instance.currentUser!.reload();
 
     setState(() {
-      isEmailVerified = FirebaseAuth.instance.currentUser!.emailVerified;
+      hasSuccessfullyLogined = FirebaseAuth.instance.currentUser!.emailVerified;
     });
 
-    if (isEmailVerified) timer?.cancel();
+    if (hasSuccessfullyLogined) timer?.cancel();
   }
 }
