@@ -9,7 +9,10 @@ class SearchBox extends StatefulWidget {
   final ValueChanged<Suggestion> onTapped;
   final ValueChanged<List<Suggestion>> onChanged;
 
-  const SearchBox({super.key, required this.onTapped, required this.onChanged});
+  final Widget body;
+  final bool overlay;
+
+  const SearchBox({super.key, required this.onTapped, required this.onChanged, required this.body, required this.overlay});
 
   @override
   _SearchBoxState createState() => _SearchBoxState();
@@ -50,6 +53,8 @@ class _SearchBoxState extends State<SearchBox> {
                     onTap: () => state.selectSuggestion(suggest),
                   );
                 },
+                continuedBody: widget.body,
+                overlay: widget.overlay,
               ));
   }
 

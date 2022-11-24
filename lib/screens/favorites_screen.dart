@@ -74,25 +74,24 @@ class _FavoriteFestivalListScreenState extends State<FavoriteFestivalListScreen>
     final GlobalKey<ChipsInputState> _chipKey = GlobalKey();
 
     return Scaffold(
-        appBar: AppBar(
-            title: const Text("Festivals")
-        ),
-        body: Container(
-            padding: const EdgeInsets.all(10),
-            width: MediaQuery.of(context).size.width,
-            height: MediaQuery.of(context).size.height,
-            child: Column(children: <Widget>[
-              Container(
-                child: Expanded(child: SearchBox(
-                onTapped: (Suggestion value) {
-                  tags.remove(value);
-                  search(tags);
-                },
-                onChanged: (List<Suggestion> value) {
-                  tags = value;
-                  search(tags);
-                }))
-              ),
+      appBar: AppBar(
+          title: const Text("Festivals")
+      ),
+      body: Container(
+        padding: const EdgeInsets.all(10),
+        width: MediaQuery.of(context).size.width,
+        height: MediaQuery.of(context).size.height,
+        child:
+            Expanded(child: SearchBox(
+            onTapped: (Suggestion value) {
+              tags.remove(value);
+              search(tags);
+            },
+            onChanged: (List<Suggestion> value) {
+              tags = value;
+              search(tags);
+            },
+            body:
               Expanded(
                 child: FestivalList(
                   festivals: favorites,
@@ -100,13 +99,14 @@ class _FavoriteFestivalListScreenState extends State<FavoriteFestivalListScreen>
                   scrollController: ScrollController(),
                   onDelete: (fest) => remove(fest),
                   onClick: (id) =>
-                      Navigator.pushNamed(
-                        context,
-                        ExtractSingleArgumentWidget.routeName,
-                        arguments: SingleArgument(id.toString()))
-                ))
-            ])
-        )
+                    Navigator.pushNamed(
+                      context,
+                      ExtractSingleArgumentWidget.routeName,
+                      arguments: SingleArgument(id.toString()))
+                )),
+              overlay: false,
+            )),
+      )
     );
   }
 }

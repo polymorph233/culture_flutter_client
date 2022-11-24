@@ -40,10 +40,11 @@ class CommentWidget extends StatelessWidget {
       case Star.star5: count = 5; break;
     }
 
-    const icon = Icon(Icons.star, size: 16,);
+    const iconA = Icon(Icons.star, size: 16, color: Colors.amber);
+    const iconB = Icon(Icons.star, size: 16);
 
     return
-      List.filled(count, icon);
+      List.filled(count, iconA) + List.filled(5 - count, iconB);
   }
 
   Widget get _title {
