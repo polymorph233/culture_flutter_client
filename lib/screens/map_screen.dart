@@ -13,6 +13,7 @@ import 'package:flutter_map_marker_cluster/flutter_map_marker_cluster.dart';
 
 import '../packages/text_cursor/text_cursor.dart';
 import '../services/dummy_service.dart';
+import '../utils/single_string_argument.dart';
 import '../widgets/festival_list.dart';
 
 class MapListScreen extends StatefulWidget {
@@ -81,9 +82,11 @@ class _MapListScreenState extends State<MapListScreen> {
                 children: <Widget>[
                   IconButton(
                     icon: const Icon(Icons.info_outline),
-                    onPressed: () {
-                      /* ... */
-                    },
+                    onPressed: () =>
+                        Navigator.pushNamed(
+                            context,
+                            ExtractSingleArgumentWidget.routeName,
+                            arguments: SingleArgument(highlighted!.id.toString())),
                   ),
                   const SizedBox(width: 8),
                   IconButton(
