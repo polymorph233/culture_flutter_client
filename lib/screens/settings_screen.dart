@@ -1,4 +1,4 @@
-import 'package:culture_flutter_client/screens/delete_account.dart';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -24,6 +24,8 @@ class SettingsScreenState extends State<SettingsScreen> {
   TextEditingController passwordController = TextEditingController();
 
   bool passwordInput = false;
+
+  bool deleteRequest = false;
 
   @override
   void initState() {
@@ -66,6 +68,8 @@ class SettingsScreenState extends State<SettingsScreen> {
     //final user = firebaseAuth.instance.currentUser;
 
     final currentPasswordController = TextEditingController();
+
+    final deletePasswordController = TextEditingController();
 
     return Scaffold(
       appBar: AppBar(
@@ -141,7 +145,7 @@ class SettingsScreenState extends State<SettingsScreen> {
                         decoration: const InputDecoration(
                           prefixIcon: Icon(Icons.password),
                           border: OutlineInputBorder(),
-                          labelText: "Password"),
+                          labelText: "Current password"),
                         controller: currentPasswordController, style: const TextStyle(fontSize: 16))),
                       IconButton(icon: const Icon(Icons.edit), onPressed: () =>
                       changePassword(currentPasswordController.text))
@@ -155,39 +159,83 @@ class SettingsScreenState extends State<SettingsScreen> {
               padding: const EdgeInsets.only(left: 48, right: 48),
               child: ElevatedButton.icon(
                   style:
-                  ElevatedButton.styleFrom(minimumSize: const Size.fromHeight(32)),
+                  ElevatedButton.styleFrom(minimumSize: const Size.fromHeight(48)),
                   icon: const Icon(Icons.lock_open, size: 16),
                   label: const Text(
                     'Sign out',
                     style: TextStyle(fontSize: 16),
                   ),
-                  onPressed: () => FirebaseAuth.instance.signOut()),
-            ),
-            const SizedBox(height: 40),
+                  onPressed: () {
+                    FirebaseAuth.instance.signOut();
+                    navigatorKey.currentState!.pop();
+                  },
+            )),
+            const SizedBox(height: 32),
             Container(
               padding: const EdgeInsets.only(left: 48, right: 48),
               child: ElevatedButton.icon(
                 style:
-                ElevatedButton.styleFrom(minimumSize: const Size.fromHeight(32)),
+                ElevatedButton.styleFrom(minimumSize: const Size.fromHeight(48), backgroundColor: deleteRequest ? Colors.blue : Colors.red),
                 icon: const Icon(Icons.delete_outlined, size: 16),
-                label: const Text(
-                  'Delete account',
+                label: Text(
+                  deleteRequest ? 'Cancel' : 'Delete account',
                   style: TextStyle(fontSize: 16),
                 ),
                 onPressed: () =>
-                    Navigator.pushNamed(context, '/deleteaccount')),)
-          ],
+                    setState(() {
+                      deleteRequest = !deleteRequest;
+                    })))
+          ] +
+            (deleteRequest
+                ? <Widget>[
+              SizedBox(height: 32),
+              Text("Are you sure? Please input your password if you really want to do so", style: TextStyle(fontSize: 18)),
+              SizedBox(height: 32),
+              Row(children: [
+                Expanded(child: TextFormField(
+                    validator:(pass) => Validator.isValidPassword(pass)
+                        ? null
+                        : "Need at least 6 chars in [a-zA-z0-9-_#?*()].",
+                    obscureText: true,
+                    decoration: const InputDecoration(
+                        prefixIcon: Icon(Icons.password),
+                        border: OutlineInputBorder(),
+                        labelText: "Password"),
+                    controller: deletePasswordController, style: const TextStyle(fontSize: 16))),
+                IconButton(icon: const Icon(Icons.delete, color: Colors.red,), onPressed: () =>
+                    deleteAccount(deletePasswordController.text))
+              ]),
+            ]
+                : [const SizedBox(height: 32)])
         ),
       ),
     ));
   }
 
-  changePassword(String current) async {
+  changePassword(String current) {
     try {
-      await FirebaseAuth.instance.signInWithEmailAndPassword(
+      FirebaseAuth.instance.signInWithEmailAndPassword(
         email: emailController.text,
-        password: passwordController.text,
-      );
+        password: current,
+      ).then((cred) {
+        cred.user!.updatePassword(current);
+        FirebaseAuth.instance.signOut();
+      });
+      Utils.showSnackBar("Your password has been successfully updated, please re-login.");
+    } on FirebaseAuthException catch (e) {
+      print(e);
+      Utils.showSnackBar(e.message);
+    }
+    navigatorKey.currentState!.pop();
+  }
+
+  deleteAccount(String current) {
+    try {
+      FirebaseAuth.instance.signInWithEmailAndPassword(
+        email: emailController.text,
+        password: current,
+      ).then((cred) => cred.user!.delete());
+      Utils.showSnackBar("Your account has been successfully deleted.");
     } on FirebaseAuthException catch (e) {
       print(e);
       Utils.showSnackBar(e.message);

@@ -1,5 +1,4 @@
 import 'package:culture_flutter_client/screens/cover_screen.dart';
-import 'package:culture_flutter_client/screens/delete_account.dart';
 import 'package:culture_flutter_client/screens/settings_screen.dart';
 import 'package:culture_flutter_client/screens/login_screen.dart';
 import 'package:culture_flutter_client/services/utils.dart';
@@ -43,7 +42,6 @@ class MyApp extends StatelessWidget {
             '/auth': (context) => const CoverScreen(),
             '/login': (context) => LoginScreen(),
             '/settings': (context) => const SettingsScreen(),
-            '/deleteaccount': (context) => const DeleteAccountScreen(),
             '/welcome': (context) => WelcomeScreenEntry(),
             '/list': (context) => FestivalListEntry(),
             '/fav': (context) => FavoriteFestivalsEntry(),
