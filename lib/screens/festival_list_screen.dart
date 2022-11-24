@@ -69,17 +69,15 @@ class _FestivalListScreenState extends State<FestivalListScreen> {
             width: MediaQuery.of(context).size.width,
             height: MediaQuery.of(context).size.height,
             child: Column(children: <Widget>[
-              Container(
-                child: Expanded(child: SearchBox(
-                  onTapped: (Suggestion value) {
-                    tags.remove(value);
-                    search(tags);
-                  },
-                  onChanged: (List<Suggestion> value) {
-                    tags = value;
-                    search(tags);
-                  }))
-              ),
+              SearchBox(
+                onTapped: (Suggestion value) {
+                  tags.remove(value);
+                  search(tags);
+                },
+                onChanged: (List<Suggestion> value) {
+                  tags = value;
+                  search(tags);
+                }),
               Expanded(
                   child: FestivalList(
                     festivals: festivals, favorites: vm.favorites, scrollController: ScrollController(),

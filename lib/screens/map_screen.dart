@@ -13,6 +13,7 @@ import 'package:provider/provider.dart';
 import 'package:flutter_map_marker_cluster/flutter_map_marker_cluster.dart';
 
 import '../packages/text_cursor/text_cursor.dart';
+import '../services/dummy_service.dart';
 import '../widgets/festival_list.dart';
 
 class MapListScreen extends StatefulWidget {
@@ -114,6 +115,20 @@ class _MapListScreenState extends State<MapListScreen> {
     }
   }
 
+  void search(List<Suggestion> tags) {
+    if (tags.isEmpty) {
+      final vm = Provider.of<MainListViewModel>(context, listen: false);
+      setState(() {
+        festivals = vm.festivals;
+      });
+    } else {
+      setState(() {
+        festivals = festivals.where((entry) =>
+            tags.any((tag) => FestivalViewModel.getLabelBySuggestType(tag.type, entry).toLowerCase().contains(tag.content))).toList();
+      });
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     final vm = Provider.of<MainListViewModel>(context);
@@ -123,7 +138,7 @@ class _MapListScreenState extends State<MapListScreen> {
         .map((fest) => makeMarker(fest))
         .toList();
 
-    List<String> tags = [];
+    List<Suggestion> tags = [];
 
     final GlobalKey<ChipsInputState> _chipKey = GlobalKey();
 
@@ -133,58 +148,71 @@ class _MapListScreenState extends State<MapListScreen> {
         padding: const EdgeInsets.all(10),
         width: MediaQuery.of(context).size.width,
         height: MediaQuery.of(context).size.height,
-        child: Stack(children: [
+        child:
           Column(children: <Widget>[
+            Container(
+              child: SearchBox(
+                onTapped: (Suggestion value) {
+                  tags.remove(value);
+                  search(tags);
+                },
+                onChanged: (List<Suggestion> value) {
+                  tags = value;
+                  search(tags);
+                }))
+            ,
             Expanded(
-              child: FlutterMap(
-                options: MapOptions(
-                  center: LatLng(47.5000, 1.7500),
-                  zoom: 6.5,
-                ),
-                nonRotatedChildren: [
-                  AttributionWidget.defaultWidget(
-                    source: 'OpenStreetMap contributors',
-                    onSourceTapped: null,
-                  ),
-                ],
-                children: [
-                  TileLayer(
-                    urlTemplate:
-                        'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
-                    userAgentPackageName: 'com.example.app',
-                    subdomains: const ['a', 'b', 'c'],
-                  ),
-                  MarkerClusterLayerWidget(
-                    options: MarkerClusterLayerOptions(
-                      maxClusterRadius: 45,
-                      size: const Size(40, 40),
-                      anchor: AnchorPos.align(AnchorAlign.center),
-                      fitBoundsOptions: const FitBoundsOptions(
-                        padding: EdgeInsets.all(50),
-                        maxZoom: 15,
+              child:
+                Stack(children: [
+                  FlutterMap(
+                    options: MapOptions(
+                      center: LatLng(47.5000, 1.7500),
+                      zoom: 6.5,
+                    ),
+                    nonRotatedChildren: [
+                      AttributionWidget.defaultWidget(
+                      source: 'OpenStreetMap contributors',
+                      onSourceTapped: null,
+                    ),
+                    ],
+                    children: [
+                      TileLayer(
+                        urlTemplate:
+                          'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
+                        userAgentPackageName: 'com.example.app',
+                        subdomains: const ['a', 'b', 'c'],
                       ),
-                      markers: markers,
-                      builder: (context, markers) {
-                        return Container(
-                          decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(20),
-                              color: Colors.blue),
-                          child: Center(
-                            child: Text(
-                              markers.length.toString(),
-                              style: const TextStyle(color: Colors.white),
-                            ),
+                      MarkerClusterLayerWidget(
+                        options: MarkerClusterLayerOptions(
+                          maxClusterRadius: 45,
+                          size: const Size(40, 40),
+                          anchor: AnchorPos.align(AnchorAlign.center),
+                          fitBoundsOptions: const FitBoundsOptions(
+                            padding: EdgeInsets.all(50),
+                            maxZoom: 15,
                           ),
-                        );
-                      }),
-                  )
-                ],
-              ),
-            ), //we will create this further down
-          ]),
-          makeCard(),
-        ])
-      ));
+                          markers: markers,
+                          builder: (context, markers) {
+                            return Container(
+                              decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(20),
+                                  color: Colors.blue),
+                              child: Center(
+                                child: Text(
+                                  markers.length.toString(),
+                                  style: const TextStyle(color: Colors.white),
+                                ),
+                              ),
+                            );
+                          }),
+                      )
+                    ],
+                  ),
+                  makeCard(),
+                ],//we will create this further down
+            ),
+        )
+      ])));
   }
 }
 

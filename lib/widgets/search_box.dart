@@ -18,12 +18,9 @@ class SearchBox extends StatefulWidget {
 class _SearchBoxState extends State<SearchBox> {
   @override
   Widget build(BuildContext context) {
-    return Column(
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: <Widget>[
-          Expanded(
+    return
             // TODO: Add validator
-            child: Padding(
+            Padding(
               padding: const EdgeInsets.all(8.0),
               child: ChipsInput<Suggestion>(
                 decoration: InputDecoration(prefixIcon: Icon(Icons.search), hintText: 'keyword search'),
@@ -53,10 +50,7 @@ class _SearchBoxState extends State<SearchBox> {
                     onTap: () => state.selectSuggestion(suggest),
                   );
                 },
-              ),
-            ),
-          ),
-        ]);
+              ));
   }
 
   void _onChipTapped(Suggestion suggest) {
