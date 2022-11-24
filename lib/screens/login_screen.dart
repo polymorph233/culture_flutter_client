@@ -1,4 +1,5 @@
 import 'package:culture_flutter_client/main.dart';
+import 'package:culture_flutter_client/screens/festival_detail_screen.dart';
 import 'package:culture_flutter_client/screens/forgot_password_screen.dart';
 import 'package:email_validator/email_validator.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -20,7 +21,7 @@ class LoginScreenState extends State<LoginScreen> {
   final passwordController = TextEditingController();
 
   bool isRegistered = false;
-  String checkingUserState = "";
+  String checkingUserState = "Welcome";
 
   @override
   void dispose() {
@@ -49,14 +50,19 @@ class LoginScreenState extends State<LoginScreen> {
           onPressed: () => Navigator.pushNamed(context, '/auth'),
         ),
       ),
-      body: SingleChildScrollView(
-        padding: const EdgeInsets.all(20),
+      body: Container(
+        padding: const EdgeInsets.all(48),
         child: Form(
           key: formKey,
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
-            children: (checkingUserState.isEmpty ? <Widget>[] : <Widget>[Text(checkingUserState)]) +
+            children:
                 <Widget>[
+                  Container(
+                    padding: const EdgeInsets.all(24),
+                    child:
+                      Text(checkingUserState, style: TextStyle(fontSize: 24, fontWeight: FontWeight.w300)),
+                  ),
                   Focus(
                     onFocusChange: (hasFocus) {
                       if (!hasFocus && emailController.text.isNotEmpty) {
@@ -73,7 +79,9 @@ class LoginScreenState extends State<LoginScreen> {
                             : "Please provide a valid email address.",
                         textInputAction: TextInputAction.next,
                         decoration: const InputDecoration(
-                          hintText: 'Your email',
+                          prefixIcon: Icon(Icons.account_circle),
+                          border: OutlineInputBorder(),
+                          labelText: "Email"
                         ),
                   )),
                   const Divider(),
@@ -82,31 +90,36 @@ class LoginScreenState extends State<LoginScreen> {
                     textInputAction: TextInputAction.done,
                     obscureText: true,
                     decoration: const InputDecoration(
-                      hintText: 'Your password',
+                      prefixIcon: Icon(Icons.password),
+                      border: OutlineInputBorder(),
+                      labelText: "Password",
                     ),
                     autovalidateMode: AutovalidateMode.onUserInteraction,
                     validator: (pass) => ((pass?.length ?? 0) > 6 &&
                             RegExp(r"[a-zA-Z0-9-_\?\*#\(\)]+")
                                 .hasMatch(pass ?? "")
                         ? null
-                        : "Should only contain [a-zA-z0-9-_#?*()] with at least 6 characters"),
+                        : "Need at least 6 chars in [a-zA-z0-9-_#?*()]."),
                   ),
-                  const Divider(),
-                  ElevatedButton.icon(
-                      style: ElevatedButton.styleFrom(
-                          minimumSize: const Size.fromHeight(50)),
-                      icon: const Icon(Icons.lock_open, size: 32),
-                      label: const Text(
-                        'Sign in',
-                        style: TextStyle(fontSize: 24),
-                      ),
-                      onPressed: () {
-                        if (isRegistered) {
-                          signIn();
-                        } else {
-                          signUp();
-                        }
-                      }),
+                  const Divider(height: 48),
+                  Container(
+                    padding: EdgeInsets.only(left: 24, right: 24),
+                    child:
+                      ElevatedButton.icon(
+                        style: ElevatedButton.styleFrom(
+                            minimumSize: const Size.fromHeight(50)),
+                        icon: const Icon(Icons.lock_open, size: 24),
+                        label: const Text(
+                          'Sign in',
+                          style: TextStyle(fontSize: 24),
+                        ),
+                        onPressed: () {
+                          if (isRegistered) {
+                            signIn();
+                          } else {
+                            signUp();
+                          }
+                        })),
                   const SizedBox(height: 24)
                 ] +
                 (isRegistered
@@ -136,7 +149,7 @@ class LoginScreenState extends State<LoginScreen> {
   void checkIfEmailExists(String email) async {
     if (isValidEmail(email)) {
       setState(() {
-        checkingUserState = "Checking your account, please wait...";
+        checkingUserState = "Checking ...";
       });
       FirebaseAuth.instance
           .fetchSignInMethodsForEmail(email)
@@ -183,6 +196,8 @@ class LoginScreenState extends State<LoginScreen> {
       await FirebaseAuth.instance.createUserWithEmailAndPassword(
         email: emailController.text.trim(),
         password: passwordController.text.trim(),
+      ).then((cred) =>
+        cred.user!.updateDisplayName("User ${generateRandomString(6)}")
       );
     } on FirebaseAuthException catch (e) {
       print(e);
