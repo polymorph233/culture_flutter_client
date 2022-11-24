@@ -127,7 +127,7 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
                   final item = recommends[index];
 
                   return InkWell(
-                    onTap: () => context.pushNamed('festival', params: {"id": item.toString()}),
+                    onTap: () => context.pushNamed('festival', params: {"id": item.id.toString()}),
                     child: Card(
                       margin: const EdgeInsets.all(10),
                       child: ListTile(

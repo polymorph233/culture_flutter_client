@@ -113,6 +113,30 @@ class FestivalDetailScreenState extends State<FestivalDetailScreen> {
       ],
     );
 
+    final commentHead = Container(
+      margin: const EdgeInsets.only(top: 20.0, bottom: 20.0),
+      child:
+      Row(children: [
+        Flexible(
+          child: Container(
+              margin: const EdgeInsets.only(left: 20.0, right: 16.0),
+              child: const Divider(
+                color: Colors.black,
+                height: 24,
+              )),
+        ),
+        const Text("Comments"),
+        Flexible(
+          child: Container(
+              margin: const EdgeInsets.only(left: 16.0, right: 20.0),
+              child: const Divider(
+                color: Colors.black,
+                height: 24,
+              )),
+        ),
+      ])
+    );
+
     return Scaffold(
       appBar: AppBar(
           title: Text(widget.viewModel.festival.name)
@@ -122,24 +146,29 @@ class FestivalDetailScreenState extends State<FestivalDetailScreen> {
         width: MediaQuery.of(context).size.width,
         height: MediaQuery.of(context).size.height,
         child: Column(children: [
-          Expanded(
-            child:
-              table
-          ),
           FutureBuilder<List<CommentViewModel>>(
             future: loadComments(),
             builder: (BuildContext context, AsyncSnapshot<List<CommentViewModel>> commentsFuture) {
+              List<Widget> prepare = [];
               if (commentsFuture.hasData && commentsFuture.data != null) {
-                return Expanded(
-                    child: CommentList(comments: commentsFuture.data!, scrollController: ScrollController()));
+                prepare = <Widget>[table, commentHead] + commentsFuture.data!.map((cmt) => CommentWidget(item: cmt) ).toList();
               } else {
-                return const Text("Comment is loading, please wait...");
+                prepare = <Widget>[table, const Text("Comment is loading, please wait...")];
               }
-            },
-          ),
-        ]
-      )
-    ));
+              return
+                Expanded(
+                  child:
+                    ListView.builder(
+                      itemCount: prepare.length,
+                      controller: ScrollController(),
+                      itemBuilder: (context, index) {
+                        return prepare[index];
+                      }
+                    )
+                );
+              })
+        ])
+      ));
   }
 }
 
