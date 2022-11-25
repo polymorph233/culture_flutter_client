@@ -34,8 +34,8 @@ class _MapListScreenState extends State<MapListScreen> {
     final vm = Provider.of<MainListViewModel>(context, listen: false);
 
     vm.update().then((_) => setState(() {
-          festivals = vm.festivals;
-        }));
+        festivals = vm.festivals;
+      }));
   }
 
   @override

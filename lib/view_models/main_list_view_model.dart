@@ -1,4 +1,8 @@
+import 'package:culture_flutter_client/models/festival.dart';
 import 'package:culture_flutter_client/services/dummy_service.dart';
+import 'package:culture_flutter_client/services/firebase_connector.dart';
+import 'package:culture_flutter_client/services/utils.dart';
+import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/widgets.dart';
 import 'package:collection/collection.dart';
 
@@ -16,8 +20,20 @@ class MainListViewModel extends ChangeNotifier {
     super.dispose();
   }
 
+  void init(List<FestivalViewModel> festivals) async {
+    this.festivals = festivals;
+    notifyListeners();
+  }
+
   Future<void> update() async {
     // TODO: Update festival list from remote
+
+    if (festivals.isNotEmpty) {
+      return;
+    } else {
+      festivals = await FirebaseConnector.fetchDB();
+    }
+
     final results = await DummyService.fetch();
     festivals = results.mapIndexed((i, e) => FestivalViewModel(id: i, model: e)).toList();
     notifyListeners();

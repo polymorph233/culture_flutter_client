@@ -61,14 +61,14 @@ class FestivalCarouselState extends State<FestivalCarousel> {
                               vertical: 15.0, horizontal: 15.0),
                           child: Row(children: [
                             Icon(categoryIcon(item.domain), color: Colors.white),
-                            Text(
+                            Expanded(child: Text(
                               "   ${item.name}",
                               style: const TextStyle(
                                 color: Colors.white,
                                 fontSize: 20.0,
                                 fontWeight: FontWeight.bold,
                               ),
-                            ),
+                            )),
                           ]),
                       ),
                       )],

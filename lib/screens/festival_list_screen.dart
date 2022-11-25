@@ -27,7 +27,7 @@ class _FestivalListScreenState extends State<FestivalListScreen> {
   void initState() {
     super.initState();
     final vm = Provider.of<MainListViewModel>(context, listen: false);
-    
+
     vm.update().then((_) =>
     setState(() =>{ festivals = vm.festivals}));
   }
@@ -69,7 +69,7 @@ class _FestivalListScreenState extends State<FestivalListScreen> {
             width: MediaQuery.of(context).size.width,
             height: MediaQuery.of(context).size.height,
             child:
-              Expanded(child: SearchBox(
+              SearchBox(
                 onTapped: (Suggestion value) {
                   tags.remove(value);
                   search(tags);
@@ -94,7 +94,7 @@ class _FestivalListScreenState extends State<FestivalListScreen> {
                 overlay: false,
               ),
 
-    )));
+    ));
   }
 }
 
