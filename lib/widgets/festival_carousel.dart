@@ -5,6 +5,7 @@ import 'package:culture_flutter_client/services/img_provider_service.dart';
 import 'package:flutter/material.dart';
 
 import '../models/festival.dart';
+import '../utils/single_string_argument.dart';
 import '../view_models/festival_view_model.dart';
 
 class FestivalCarousel extends StatefulWidget {
@@ -62,13 +63,18 @@ class FestivalCarouselState extends State<FestivalCarousel> {
                           child: Row(children: [
                             Icon(categoryIcon(item.domain), color: Colors.white),
                             Expanded(child: Text(
-                              "   ${item.name}",
+                              "   ${item.name.length > 14 ? "${item.name.substring(0, 14)}..." : item.name}",
                               style: const TextStyle(
                                 color: Colors.white,
                                 fontSize: 20.0,
                                 fontWeight: FontWeight.bold,
                               ),
                             )),
+                            IconButton(onPressed: () =>
+                              Navigator.pushNamed(
+                                context,
+                                ExtractSingleArgumentWidget.routeName,
+                                arguments: SingleArgument(item.id.toString())), icon: const Icon(Icons.arrow_forward_ios, color: Colors.white,))
                           ]),
                       ),
                       )],

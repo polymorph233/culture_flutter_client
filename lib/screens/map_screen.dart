@@ -123,7 +123,7 @@ class _MapListScreenState extends State<MapListScreen> {
     } else {
       setState(() {
         festivals = festivals
-            .where((entry) => tags.any((tag) =>
+            .where((entry) => tags.every((tag) =>
                 FestivalViewModel.getLabelBySuggestType(tag.type, entry)
                     .toLowerCase()
                     .contains(tag.content)))

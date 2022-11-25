@@ -47,7 +47,7 @@ class _FavoriteFestivalListScreenState extends State<FavoriteFestivalListScreen>
     } else {
       setState(() {
         favorites = favorites.where((entry) =>
-            tags.any((tag) => FestivalViewModel.getLabelBySuggestType(tag.type, entry).toLowerCase().contains(tag.content))).toList();
+            tags.every((tag) => FestivalViewModel.getLabelBySuggestType(tag.type, entry).toLowerCase().contains(tag.content))).toList();
       });
     }
   }
