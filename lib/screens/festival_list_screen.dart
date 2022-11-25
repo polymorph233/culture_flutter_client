@@ -79,8 +79,7 @@ class _FestivalListScreenState extends State<FestivalListScreen> {
                   search(tags);
                 },
                 body:
-                  Container(
-                    height: 600,
+                  Expanded(
                     child: FestivalList(
                       festivals: festivals, favorites: vm.favorites, scrollController: ScrollController(),
                       onAdd: (fest) => vm.addFavorite(fest),
