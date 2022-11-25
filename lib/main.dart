@@ -1,6 +1,7 @@
 import 'package:culture_flutter_client/screens/cover_screen.dart';
 import 'package:culture_flutter_client/screens/settings_screen.dart';
 import 'package:culture_flutter_client/screens/login_screen.dart';
+import 'package:culture_flutter_client/services/firebase_connector.dart';
 import 'package:culture_flutter_client/services/utils.dart';
 import 'package:culture_flutter_client/utils/single_string_argument.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -11,15 +12,29 @@ import 'package:culture_flutter_client/screens/festival_list_screen.dart';
 import 'package:culture_flutter_client/screens/map_screen.dart';
 import 'package:culture_flutter_client/screens/welcome_screen.dart';
 import 'package:culture_flutter_client/view_models/main_list_view_model.dart';
+import 'package:firebase_database/firebase_database.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 
 import 'screens/verify_email_screen.dart';
 
+const USE_DATABASE_EMULATOR = false;
+const emulatorPort = 9000;
+final emulatorHost =
+(!kIsWeb && defaultTargetPlatform == TargetPlatform.android)
+    ? '10.0.2.2'
+    : 'localhost';
+
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
+
+  if (USE_DATABASE_EMULATOR) {
+    FirebaseDatabase.instance.useDatabaseEmulator(emulatorHost, emulatorPort);
+  }
+
   runApp(const MyApp());
 }
 
@@ -33,7 +48,7 @@ class MyApp extends StatelessWidget {
     return
       MultiProvider(
         providers: [
-          ChangeNotifierProvider<MainListViewModel>(create: (_) => MainListViewModel())
+          ChangeNotifierProvider<MainListViewModel>(create: (_) => MainListViewModel()),
         ],
         child: MaterialApp(
           scaffoldMessengerKey: Utils.messengerKey,
@@ -60,6 +75,7 @@ class MyApp extends StatelessWidget {
 class MainPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
+
     return Scaffold(
       body: StreamBuilder<User?>(
         stream: FirebaseAuth.instance.authStateChanges(),

@@ -3,6 +3,7 @@ import 'dart:math';
 
 import 'package:culture_flutter_client/models/festival.dart';
 import 'package:culture_flutter_client/services/dummy_service.dart';
+import 'package:culture_flutter_client/services/firebase_connector.dart';
 import 'package:culture_flutter_client/view_models/comment_view_model.dart';
 import 'package:culture_flutter_client/view_models/festival_detail_view_model.dart';
 import 'package:culture_flutter_client/view_models/festival_view_model.dart';

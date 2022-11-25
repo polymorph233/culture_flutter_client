@@ -22,19 +22,19 @@ class FestivalViewModel {
   }
 
   String get principalRegion {
-    return model.principalRegion;
+    return model.principalRegion ?? "unknonwn region";
   }
 
   String get principalDepartment {
-    return model.principalDepartment;
+    return model.principalDepartment ?? "unknown commune";
   }
 
   String get principalCommune {
-    return model.principalCommune;
+    return model.principalCommune ?? "unknown commune";
   }
 
   String get principalPeriod {
-    return model.principalPeriod;
+    return model.principalPeriod ?? "period not defined";
   }
 
   String? get officialSite {
@@ -45,7 +45,7 @@ class FestivalViewModel {
     return model.zipCode;
   }
 
-  int get inseeCode {
+  String? get inseeCode {
     return model.inseeCode;
   }
 

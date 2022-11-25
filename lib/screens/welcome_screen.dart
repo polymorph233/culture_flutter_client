@@ -1,4 +1,6 @@
+import 'package:culture_flutter_client/services/firebase_connector.dart';
 import 'package:culture_flutter_client/services/recommend_festival_service.dart';
+import 'package:culture_flutter_client/view_models/festival_view_model.dart';
 import 'package:culture_flutter_client/view_models/main_list_view_model.dart';
 import 'package:culture_flutter_client/widgets/fab.dart';
 import 'package:culture_flutter_client/widgets/festival_carousel.dart';
@@ -8,6 +10,7 @@ import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 
 import '../models/festival.dart';
+import '../utils/single_string_argument.dart';
 import '../widgets/festival_list.dart';
 
 class WelcomeScreen extends StatefulWidget {
@@ -16,29 +19,61 @@ class WelcomeScreen extends StatefulWidget {
   @override
   _WelcomeScreenState createState() => _WelcomeScreenState();
 }
+
 class _WelcomeScreenState extends State<WelcomeScreen> {
 
   @override
   void initState() {
     super.initState();
-    Provider.of<MainListViewModel>(context, listen: false).update();
+    final vm = Provider.of<MainListViewModel>(context, listen: false);
+    Future.delayed(Duration.zero, () async {
+      final db = await FirebaseConnector.fetchDB();
+      vm.init(db);
+    });
   }
 
   @override
   Widget build(BuildContext context) {
-    const int carouselCount = 4;
 
     final vm = Provider.of<MainListViewModel>(context);
+
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text("Welcome to Festival Culture")
+      ),
+      body:
+        vm.festivals.isNotEmpty
+        ? buildScreen(vm)
+        : Container(
+                  padding: const EdgeInsets.all(10),
+                  width: MediaQuery.of(context).size.width,
+                  height: MediaQuery.of(context).size.height,
+                  child: Center(
+                    child:
+                    Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: const [
+                      CircularProgressIndicator(),
+                      Text("Loading, please wait..."),
+                ])))
+    );
+  }
+
+  Widget buildScreen(MainListViewModel vm) {
+    const int carouselCount = 4;
+
     final carousel = FestivalCarousel(festivals: vm.randomFestivals(carouselCount));
-    
+
+    final recommends = RecommendFestivalService(vm.festivals, vm.favorites).recommend(2);
+
     final list = OutlinedButton(onPressed: () => Navigator.pushNamed(context, '/list'),
-      child: const Center(child: Text('Festivals')));
+        child: const Center(child: Text('Festivals')));
     final map = OutlinedButton(onPressed: () => Navigator.pushNamed(context, '/map'),
-      child: const Center(child: Text('Map')));
+        child: const Center(child: Text('Map')));
     final fav = OutlinedButton(onPressed: () => Navigator.pushNamed(context, '/fav'),
-      child: const Center(child: Text('My Favorites')));
+        child: const Center(child: Text('My Favorites')));
     final config = OutlinedButton(onPressed: () => Navigator.pushNamed(context, '/settings'), child: const Center(child: Text('Settings')));
-    
+
     final portrait = [[list, map], [fav, config]];
 
     const portraitMargin = EdgeInsets.all(20);
@@ -57,89 +92,87 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
 
     final isLandscape = MediaQuery.of(context).size.width > MediaQuery.of(context).size.height;
 
-    final recommends = RecommendFestivalService(vm.festivals, vm.favorites).recommend(2);
-
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text("Welcome to Festival Culture")
-      ),
-      body: Container(
+    return Container(
         padding: const EdgeInsets.all(10),
         width: MediaQuery.of(context).size.width,
         height: MediaQuery.of(context).size.height,
         child:
-          isLandscape ?
-            Row(children: <Widget>[
-              Flexible(child: carousel),
-              Flexible(child: Column(children: landscape.map((child) =>
-                Flexible(child: Container(
-                  margin: landscapeMargin,
-                  child: ConstrainedBox(
+        (isLandscape ?
+        Row(children: <Widget>[
+          Flexible(child: carousel),
+          Flexible(child: Column(children: landscape.map((child) =>
+              Flexible(child: Container(
+                margin: landscapeMargin,
+                child: ConstrainedBox(
                     constraints: landscapeConstraints,
                     child: child
-                  ),
-                )
+                ),
+              )
               )).toList()))
-            ])
-          : Column(children: <Widget>[
-            Flexible(child: carousel),
-            Container(
+        ])
+            : Column(children: <Widget>[
+          Flexible(child: carousel),
+          Container(
               margin: const EdgeInsets.all(20),
               child: Column(
-              children: portrait.map((row) =>
-                Row(children: row.map((child) =>
-                    Expanded(
-                      child: Container(
-                        margin: const EdgeInsets.only(left: 20, right: 20, top: 15, bottom: 15),
-                        child: ConstrainedBox(
-                          constraints: portraitConstraints,
-                          child: child
-                      ),
-                    ))
-                ).toList())
-              ).toList())),
-            Row(children: [
-              Flexible(
-                child: Container(
+                  children: portrait.map((row) =>
+                      Row(children: row.map((child) =>
+                          Expanded(
+                              child: Container(
+                                margin: const EdgeInsets.only(left: 20, right: 20, top: 15, bottom: 15),
+                                child: ConstrainedBox(
+                                    constraints: portraitConstraints,
+                                    child: child
+                                ),
+                              ))
+                      ).toList())
+                  ).toList())),
+          Row(children: [
+            Flexible(
+              child: Container(
                   margin: const EdgeInsets.only(left: 20.0, right: 16.0),
                   child: const Divider(
                     color: Colors.black,
                     height: 24,
                   )),
-              ),
-              const Text("Recommended for you"),
-              Flexible(
-                child: Container(
+            ),
+            const Text("Recommended for you"),
+            Flexible(
+              child: Container(
                   margin: const EdgeInsets.only(left: 16.0, right: 20.0),
                   child: const Divider(
                     color: Colors.black,
                     height: 24,
                   )),
-              ),
-            ]),
-            Flexible(child:
-              ListView.builder(
-                itemCount: recommends.length,
-                controller: ScrollController(),
-                itemBuilder: (context, index) {
+            ),
+          ]),
+          Flexible(child:
+          ListView.builder(
+              itemCount: recommends.length,
+              controller: ScrollController(),
+              itemBuilder: (context, index) {
 
-                  final item = recommends[index];
+                final item = recommends[index];
 
-                  return InkWell(
-                    onTap: () => context.pushNamed('festival', params: {"id": item.id.toString()}),
-                    child: Card(
-                      margin: const EdgeInsets.all(10),
-                      child: ListTile(
-                        leading: CircleAvatar(child: Icon(categoryIcon(item.domain))),
-                        title: Text(item.name),
-                        subtitle: Text(item.principalPeriod),
-                      ),
+                return InkWell(
+                  onTap: () =>
+                      Navigator.pushNamed(
+                        context,
+                        ExtractSingleArgumentWidget.routeName,
+                        arguments: SingleArgument(item.id.toString())),
+                  child: Card(
+                    margin: const EdgeInsets.all(10),
+                    child: ListTile(
+                      leading: CircleAvatar(child: Icon(categoryIcon(item.domain))),
+                      title: Text(item.name),
+                      subtitle: Text(item.principalPeriod),
                     ),
-                  );
-                })
-            )]
-          ))
-      );
+                  ),
+                );
+              })
+          )]
+        )
+    ));
   }
 }
 
@@ -167,12 +200,13 @@ class _WelcomeScreenEntryState extends State<WelcomeScreenEntry> {
   Widget build(BuildContext context) {
     final vm = Provider.of<MainListViewModel>(context);
     return Scaffold(
-      body: ChangeNotifierProvider(
-        create: (context) => vm,
-        child: const WelcomeScreen(),
-      ),
-      floatingActionButtonLocation: ExpandableFab.location,
-      floatingActionButton: const NavigationFab(currentPageType: PageType.welcome)
+        body: ChangeNotifierProvider(
+          create: (context) => vm,
+          child: const WelcomeScreen(),
+        ),
+        floatingActionButtonLocation: ExpandableFab.location,
+        floatingActionButton: const NavigationFab(
+            currentPageType: PageType.welcome)
     );
   }
 }

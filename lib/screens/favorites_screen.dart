@@ -1,7 +1,9 @@
 
+import 'package:culture_flutter_client/services/firebase_connector.dart';
 import 'package:culture_flutter_client/view_models/festival_view_model.dart';
 import 'package:culture_flutter_client/view_models/main_list_view_model.dart';
 import 'package:culture_flutter_client/widgets/fab.dart';
+import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_expandable_fab/flutter_expandable_fab.dart';
 import 'package:go_router/go_router.dart';
@@ -65,6 +67,8 @@ class _FavoriteFestivalListScreenState extends State<FavoriteFestivalListScreen>
       favorites.remove(fest);
     });
   }
+
+
 
   @override
   Widget build(BuildContext context) {

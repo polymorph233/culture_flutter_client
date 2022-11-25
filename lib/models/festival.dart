@@ -15,6 +15,18 @@ enum Domain {
   visualNumericArts, cinema, literature, music, pluridiscipline, liveScene,
 }
 
+Domain toDomain(String value) {
+  switch (value) {
+    case 'Arts visuels, arts numériques': return Domain.visualNumericArts;
+    case 'Cinéma, audiovisuel': return Domain.cinema;
+    case 'Livre, littérature': return Domain.literature;
+    case 'Musique': return Domain.music;
+    case 'Pluridisciplinaire': return Domain.pluridiscipline;
+    case 'Spectacle vivant': return Domain.liveScene;
+    default: throw Exception("Bad domain type encountered");
+  }
+}
+
 IconData categoryIcon(Domain domain) {
   switch (domain) {
     case Domain.visualNumericArts: return Icons.palette;
@@ -43,13 +55,13 @@ String festivalToString(TerritorialSize ts) {
 class Festival {
   final String name;
   final TerritorialSize? territorialSize;
-  final String principalRegion;
-  final String principalDepartment;
-  final String principalCommune;
-  final String principalPeriod;
+  final String? principalRegion;
+  final String? principalDepartment;
+  final String? principalCommune;
+  final String? principalPeriod;
   final String? officialSite;
   final int? zipCode;
-  final int inseeCode;
+  final String? inseeCode;
   final LatLng? latLng;
   final Domain domain;
 
@@ -57,4 +69,23 @@ class Festival {
 
   Festival({required this.name, this.territorialSize, required this.principalRegion, required this.principalDepartment, required this.principalCommune, required this.principalPeriod, this.officialSite, this.zipCode, required this.inseeCode, required this.domain, this.latLng});
 
+  static Festival fromFirebase(Map<dynamic, dynamic> snapshot) {
+
+    dynamic geo = snapshot["fields"]?["geolocalisation"];
+    LatLng? latLng;
+    if (geo != null) {
+      latLng = LatLng(geo[0], geo[1]);
+    }
+
+    return Festival(
+        name: snapshot["fields"]["nom_du_festival"],
+        principalRegion: snapshot["fields"]['region_principale_de_deroulement'],
+        principalDepartment: snapshot["fields"]['departement_principal_de_deroulement'],
+        principalCommune: snapshot["fields"]['commune_principale_de_deroulement'],
+        principalPeriod:  snapshot["fields"]['periode_principale_de_deroulement_du_festival'],
+        inseeCode:  snapshot["fields"]['code_insee_commune'],
+        domain:  toDomain(snapshot["fields"]['discipline_dominante']),
+        latLng: latLng,
+    );
+  }
 }
