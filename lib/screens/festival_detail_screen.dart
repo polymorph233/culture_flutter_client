@@ -11,6 +11,7 @@ import 'package:culture_flutter_client/widgets/comment_list.dart';
 import 'package:culture_flutter_client/widgets/fab.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_expandable_fab/flutter_expandable_fab.dart';
+import 'package:flutter_map/flutter_map.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 import 'package:share_plus/share_plus.dart';
@@ -138,6 +139,32 @@ class FestivalDetailScreenState extends State<FestivalDetailScreen> {
       ])
     );
 
+    final map =
+      widget.viewModel.festival.latLng != null ?
+        SizedBox(
+          height: 300,
+          child: FlutterMap(
+        options: MapOptions(
+          center: widget.viewModel.festival.latLng,
+          zoom: 9,
+        ),
+        nonRotatedChildren: [
+          AttributionWidget.defaultWidget(
+            source: 'OpenStreetMap contributors',
+            onSourceTapped: null,
+          ),
+        ],
+        children: [
+          TileLayer(
+          urlTemplate:
+          'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
+          userAgentPackageName: 'com.example.app',
+          subdomains: const ['a', 'b', 'c'],
+          ),
+        ]
+      ))
+      : SizedBox(height: 20,);
+
     return Scaffold(
       appBar: AppBar(
           title: Text(widget.viewModel.festival.name)
@@ -152,9 +179,9 @@ class FestivalDetailScreenState extends State<FestivalDetailScreen> {
             builder: (BuildContext context, AsyncSnapshot<List<CommentViewModel>> commentsFuture) {
               List<Widget> prepare = [];
               if (commentsFuture.hasData && commentsFuture.data != null) {
-                prepare = <Widget>[table, commentHead] + commentsFuture.data!.map((cmt) => CommentWidget(item: cmt) ).toList();
+                prepare = <Widget>[table, map, commentHead] + commentsFuture.data!.map((cmt) => CommentWidget(item: cmt) ).toList();
               } else {
-                prepare = <Widget>[table, const Text("Comment is loading, please wait...")];
+                prepare = <Widget>[table, map, const Text("Comment is loading, please wait...")];
               }
               return
                 Expanded(
