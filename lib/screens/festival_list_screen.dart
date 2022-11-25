@@ -46,7 +46,7 @@ class _FestivalListScreenState extends State<FestivalListScreen> {
     } else {
       setState(() {
         festivals = festivals.where((entry) =>
-          tags.any((tag) => FestivalViewModel.getLabelBySuggestType(tag.type, entry).toLowerCase().contains(tag.content))).toList();
+          tags.every((tag) => FestivalViewModel.getLabelBySuggestType(tag.type, entry).toLowerCase().contains(tag.content))).toList();
       });
     }
   }

@@ -3,9 +3,9 @@
 <plist version="1.0">
 <dict>
 	<key>CLIENT_ID</key>
-	<string>767534342700-mrk34t8q01mqrd005hs601qb1cm3d3ku.apps.googleusercontent.com</string>
+	<string>767534342700-dr0vs8dndqm4qtsp4mqbu946f3eq2fq3.apps.googleusercontent.com</string>
 	<key>REVERSED_CLIENT_ID</key>
-	<string>com.googleusercontent.apps.767534342700-mrk34t8q01mqrd005hs601qb1cm3d3ku</string>
+	<string>com.googleusercontent.apps.767534342700-dr0vs8dndqm4qtsp4mqbu946f3eq2fq3</string>
 	<key>API_KEY</key>
 	<string>AIzaSyDYLjehjzNmMBJscFU3pt9I5LluHmXZFB0</string>
 	<key>GCM_SENDER_ID</key>
@@ -13,7 +13,7 @@
 	<key>PLIST_VERSION</key>
 	<string>1</string>
 	<key>BUNDLE_ID</key>
-	<string>fr.istic.hackathon2022.culturefestival</string>
+	<string>com.example.cultureFlutterClient</string>
 	<key>PROJECT_ID</key>
 	<string>hackathon2022istic-46ff0</string>
 	<key>STORAGE_BUCKET</key>
@@ -29,6 +29,8 @@
 	<key>IS_SIGNIN_ENABLED</key>
 	<true></true>
 	<key>GOOGLE_APP_ID</key>
-	<string>1:767534342700:ios:0a46ca0352602896432789</string>
+	<string>1:767534342700:ios:60c8b5ba9aad5fc9432789</string>
+	<key>DATABASE_URL</key>
+	<string>https://hackathon2022istic-46ff0-default-rtdb.europe-west1.firebasedatabase.app</string>
 </dict>
 </plist>
